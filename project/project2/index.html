@@ -1,0 +1,3616 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Mallorie Thomas" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Project 2: Modeling, Testing, and Predicting</title>
+    <meta name="generator" content="Hugo 0.83.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/post/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/project/project2/">Project 2: Modeling, Testing, and Predicting</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         January 1, 0001 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="r-markdown" class="section level2">
+<h2>R Markdown</h2>
+<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
+<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+##Introduction</p>
+<pre class="r"><code>#For this project, I have chosen to look at an avengers dataset because I absolutely love marvel! This dataset is very complex and contains the character name, how many times the character has appeared throughout the films, the amount of time the character has been in the avengers,the year they were introduced, and deaths. There are a total of 173 observations and 21 variables in the dataset.</code></pre>
+<p>##Question 1</p>
+<pre class="r"><code>avengers_csv &lt;-read.csv(&#39;avengers_csv.csv&#39;)
+
+# preforming a Manova with appearances and years since joining and gender
+
+man1&lt;-manova(cbind(appearances,`years.since.joining`)~`gender`, data=avengers_csv)
+summary(man1)</code></pre>
+<pre><code>## Df Pillai approx F num Df den Df Pr(&gt;F)
+## gender 1 0.036356 3.2068 2 170 0.04295 *
+## Residuals 171
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>#getting the mean difference
+summary.aov(man1) </code></pre>
+<pre><code>## Response appearances :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## gender 1 1982182 1982182 4.3973 0.03747 *
+## Residuals 171 77081588 450770
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response years.since.joining :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## gender 1 1442 1442.33 1.5685 0.2121
+## Residuals 171 157248 919.58</code></pre>
+<pre class="r"><code>avengers_csv%&gt;%group_by(gender)%&gt;%summarize(mean(`years.since.joining`),mean(appearances))</code></pre>
+<pre><code>## # A tibble: 2 x 3
+##   gender `mean(years.since.joining)` `mean(appearances)`
+##   &lt;fct&gt;                        &lt;dbl&gt;               &lt;dbl&gt;
+## 1 female                        30.6                263.
+## 2 male                          24.5                490.</code></pre>
+<pre class="r"><code>#t.test ask for help here
+pairwise.t.test(avengers_csv$`years.since.joining`,avengers_csv$gender, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: avengers_csv$years.since.joining and
+avengers_csv$gender
+##
+## female
+## male 0.21
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(avengers_csv$appearances,avengers_csv$gender, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  avengers_csv$appearances and avengers_csv$gender 
+## 
+##      female
+## male 0.037 
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>#Answers
+#According to the MANVOA assumptions, my data did certain independent samples but did not contain homogeneity within group variance matrices.MOst likely the majority of the MANOVA assumptions were not met with my dataset. I have calculated one MANOVA test, preformed 2 ANOVA test, and 6 t test to make a total of 9. The bonferri correction is my .05/9= .0056, so with correction, my data is not significant.</code></pre>
+<p>##Question 2</p>
+<pre class="r"><code># Randomization Testing: 
+bop&lt;-lm(appearances~.,data=avengers_csv) #predict appearances from all other variables
+yhat&lt;-predict(bop) 
+mean((avengers_csv$appearances-yhat)^2) </code></pre>
+<pre><code>## [1] 2.265357e-23</code></pre>
+<pre class="r"><code>#correlation
+cor(avengers_csv$appearances,avengers_csv$years.since.joining)</code></pre>
+<pre><code>## [1] 0.06729199</code></pre>
+<pre class="r"><code>cor.test(avengers_csv$appearances,avengers_csv$years.since.joining)</code></pre>
+<pre><code>##
+## Pearson&#39;s product-moment correlation
+##
+## data: avengers_csv$appearances and
+avengers_csv$years.since.joining
+## t = 0.88196, df = 171, p-value = 0.379
+## alternative hypothesis: true correlation is not equal to
+0
+## 95 percent confidence interval:
+## -0.08273895 0.21434027
+## sample estimates:
+## cor
+## 0.06729199</code></pre>
+<pre class="r"><code>#The null hypothesis is that there is no correlation between the number of appearances and years since joining. The alternative hypothesis is that their is a correlation between appearances and years since joining.The correlation is .06 which is quiet small and when I preformed the cor.test, this was confirmed since the p-value is quiet large, the relationship between the two variables is not significant. 
+#plots
+ggplot(data=avengers_csv,aes(x=years.since.joining,y=appearances)) + geom_point()</code></pre>
+<p><img src="/project/project2_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(avengers_csv$appearances)</code></pre>
+<p><img src="/project/project2_files/figure-html/unnamed-chunk-3-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(avengers_csv$years.since.joining)</code></pre>
+<p><img src="/project/project2_files/figure-html/unnamed-chunk-3-3.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>t.test(avengers_csv$appearances)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  avengers_csv$appearances
+## t = 8.0325, df = 172, p-value = 1.451e-13
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##  312.3063 515.7977
+## sample estimates:
+## mean of x 
+##   414.052</code></pre>
+<pre class="r"><code>t.test(avengers_csv$years.since.joining)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  avengers_csv$years.since.joining
+## t = 11.499, df = 172, p-value &lt; 2.2e-16
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##  21.99661 31.11322
+## sample estimates:
+## mean of x 
+##  26.55491</code></pre>
+<p>##Question 3</p>
+<pre class="r"><code>library(lmtest)
+library(sandwich)
+#Linear Regression Model
+avengers_csv</code></pre>
+<pre><code>## url
+## 1 http://marvel.wikia.com/henry_pym_(earth-616)
+## 2 http://marvel.wikia.com/janet_van_dyne_(earth-616)
+## 3 http://marvel.wikia.com/anthony_stark_(earth-616)
+## 4
+http://marvel.wikia.com/robert_bruce_banner_(earth-616)
+## 5 http://marvel.wikia.com/thor_odinson_(earth-616)
+## 6 http://marvel.wikia.com/richard_jones_(earth-616)
+## 7 http://marvel.wikia.com/steven_rogers_(earth-616)
+## 8 http://marvel.wikia.com/clint_barton_(earth-616)
+## 9 http://marvel.wikia.com/pietro_maximoff_(earth-616)
+## 10 http://marvel.wikia.com/wanda_maximoff_(earth-616)
+## 11 http://marvel.wikia.com/jacques_duquesne_(earth-616)
+## 12 http://marvel.wikia.com/hercules_(earth-616)
+## 13 http://marvel.wikia.com/t%27challa_(earth-616)
+## 14 http://marvel.wikia.com/vision_(earth-616)
+## 15 http://marvel.wikia.com/dane_whitman
+## 16 http://marvel.wikia.com/natalia_romanova_(earth-616)#
+## 17 http://marvel.wikia.com/mantis_(earth-616)#
+## 18 http://marvel.wikia.com/henry_mccoy_(earth-616)#
+## 19 http://marvel.wikia.com/heather_douglas_(earth-616)#
+## 20 http://marvel.wikia.com/patricia_walker_(earth-616)#
+## 21 http://marvel.wikia.com/matthew_hawk_(earth-616)#
+## 22 http://marvel.wikia.com/robert_frank_(earth-616)#
+## 23 http://marvel.wikia.com/simon_williams_(earth-616)#
+## 24 http://marvel.wikia.com/yondu_udonta_(earth-691)#
+## 25
+http://marvel.wikia.com/martinex_t%27naga_(earth-691)#
+## 26 http://marvel.wikia.com/charlie-27_(earth-691)#
+## 27 http://marvel.wikia.com/nicholette_gold_(earth-691)#
+## 28 http://marvel.wikia.com/stakar_ogord_(earth-691)#
+## 29 http://marvel.wikia.com/vance_astro_(earth-691)#
+## 30 http://marvel.wikia.com/mar-vell_(earth-616)#
+## 31 http://marvel.wikia.com/carol_danvers_(earth-616)#
+## 32 http://marvel.wikia.com/samuel_wilson_(earth-616)#
+## 33 http://marvel.wikia.com/jocasta_(earth-616)#
+## 34 http://marvel.wikia.com/greer_nelson_(earth-616)#
+## 35 http://marvel.wikia.com/jennifer_walters_(earth-616)#
+## 36 http://marvel.wikia.com/monica_rambeau_(earth-616)#
+## 37 http://marvel.wikia.com/eros_(earth-616)#
+## 38 http://marvel.wikia.com/james_rhodes_(earth-616)#
+## 39 http://marvel.wikia.com/barbara_morse_(earth-616)#
+## 40 http://marvel.wikia.com/moira_brandon_(earth-616)#
+## 41 http://marvel.wikia.com/benjamin_grimm_(earth-616)#
+## 42 http://marvel.wikia.com/bonita_juarez_(earth-616)#
+## 43 http://marvel.wikia.com/marc_spector_(earth-616)#
+## 44 http://marvel.wikia.com/john_walker_(earth-616)#
+## 45
+http://marvel.wikia.com/human_torch_(android)_(earth-616)#
+## 46 http://marvel.wikia.com/miguel_santos_(earth-616)#
+## 47 http://marvel.wikia.com/julia_carpenter_(earth-616)#
+## 48 http://marvel.wikia.com/2zp45-9-x-51_(earth-616)#
+## 49 http://marvel.wikia.com/chris_powell_(earth-616)#
+## 50 http://marvel.wikia.com/namor_mckenzie_(earth-616)#
+## 51 http://marvel.wikia.com/scott_lang_(earth-616)#
+## 52 http://marvel.wikia.com/anthony_druid_(earth-616)#
+## 53
+http://marvel.wikia.com/marrina_smallwood_(earth-616)#
+## 54
+http://marvel.wikia.com/ravonna_renslayer_(earth-6311)#
+## 55 http://marvel.wikia.com/rita_demara_(earth-616)#
+## 56 http://marvel.wikia.com/dennis_dunphy_(earth-616)#
+## 57 http://marvel.wikia.com/gilgamesh_(earth-616)#
+## 58 http://marvel.wikia.com/reed_richards_(earth-616)#
+## 59 http://marvel.wikia.com/susan_storm_(earth-616)#
+## 60 http://marvel.wikia.com/wendell_vaughn_(earth-616)#
+## 61 http://marvel.wikia.com/ashley_crawford_(earth-616)#
+## 62 http://marvel.wikia.com/dinah_soar_(earth-616)#
+## 63 http://marvel.wikia.com/demarr_davis_(earth-616)#
+## 64 http://marvel.wikia.com/val_ventura_(earth-616)#
+## 65 http://marvel.wikia.com/craig_hollis_(earth-616)#
+## 66 http://marvel.wikia.com/gene_lorrene_(earth-616)#
+## 67 http://marvel.wikia.com/doreen_green_(earth-616)#
+## 68 http://marvel.wikia.com/monkey_joe_(earth-616)#
+## 69 http://marvel.wikia.com/doug_taggert_(earth-616)#
+## 70 http://marvel.wikia.com/tippy-toe_(earth-616)#
+## 71 http://marvel.wikia.com/wade_wilson_(earth-616)#
+## 72 http://marvel.wikia.com/greg_willis_(earth-616)#
+## 73 http://marvel.wikia.com/sersi_(earth-616)#
+## 74 http://marvel.wikia.com/peter_parker_(earth-616)#
+## 75 http://marvel.wikia.com/walter_newell_(earth-616)#
+## 76 http://marvel.wikia.com/elvin_haliday_(earth-616)#
+## 77 http://marvel.wikia.com/william_baker_(earth-616)#
+## 78
+http://marvel.wikia.com/crystalia_amaquelin_(earth-616)#
+## 79 http://marvel.wikia.com/eric_masterson_(earth-616)#
+## 80 http://marvel.wikia.com/philip_javert_(earth-921)#
+## 81 http://marvel.wikia.com/melissa_darrow_(earth-9201)#
+## 82 http://marvel.wikia.com/deathcry_(earth-616)#
+## 83 http://marvel.wikia.com/anthony_stark_(earth-96020)#
+## 84
+http://marvel.wikia.com/giuletta_nefaria_(masque)_(earth-616)#
+## 85 http://marvel.wikia.com/vance_astrovik_(earth-616)#
+## 86 http://marvel.wikia.com/angelica_jones_(earth-616)#
+## 87
+http://marvel.wikia.com/delroy_garrett_jr._(earth-616)#
+## 88
+http://marvel.wikia.com/maria_de_guadalupe_santiago_(earth-616)#
+## 89 http://marvel.wikia.com/jonathan_hart_(earth-616)#
+## 90 http://marvel.wikia.com/kelsey_leigh_(earth-616)#
+## 91 http://marvel.wikia.com/luke_cage_(earth-616)#
+## 92 http://marvel.wikia.com/veranke_(earth-616)#
+## 93 http://marvel.wikia.com/james_howlett_(earth-616)#
+## 94 http://marvel.wikia.com/robert_reynolds_(earth-616)#
+## 95 http://marvel.wikia.com/maya_lopez_(earth-616)#
+## 96
+http://marvel.wikia.com/nathaniel_richards_(iron_lad)_(earth-6311)#
+## 97 http://marvel.wikia.com/elijah_bradley_(earth-616)#
+## 98 http://marvel.wikia.com/william_kaplan_(earth-616)#
+## 99 http://marvel.wikia.com/dorrek_viii_(earth-616)#
+## 100 http://marvel.wikia.com/cassandra_lang_(earth-616)#
+## 101
+http://marvel.wikia.com/katherine_bishop_(earth-616)#
+## 102 http://marvel.wikia.com/vision_(jonas)_(earth-616)#
+## 103 http://marvel.wikia.com/thomas_shepherd_(earth-616)#
+## 104 http://marvel.wikia.com/daniel_rand_(earth-616)#
+## 105 http://marvel.wikia.com/stephen_strange_(earth-616)#
+## 106 http://marvel.wikia.com/ares_(earth-616)#
+## 107
+http://marvel.wikia.com/james_buchanan_barnes_(earth-616)#
+## 108 http://marvel.wikia.com/jessica_drew_(earth-616)#
+## 109 http://marvel.wikia.com/jessica_jones_(earth-616)#
+## 110 http://marvel.wikia.com/amadeus_cho_(earth-616)#
+## 111 http://marvel.wikia.com/maria_hill_(earth-616)#
+## 112 http://marvel.wikia.com/robert_baldwin_(earth-616)#
+## 113 http://marvel.wikia.com/sharon_carter_(earth-616)#
+## 114 http://marvel.wikia.com/eric_o%27grady_(earth-616)#
+## 115 http://marvel.wikia.com/brunnhilde_(earth-616)#
+## 116 http://marvel.wikia.com/richard_rider_(earth-616)#
+## 117 http://marvel.wikia.com/brian_braddock_(earth-616)#
+## 118 http://marvel.wikia.com/dennis_sykes_(earth-616)#
+## 119 http://marvel.wikia.com/noh-varr_(earth-616)#
+## 120 http://marvel.wikia.com/thaddeus_ross_(earth-616)#
+## 121 http://marvel.wikia.com/john_aman_(earth-616)#
+## 122 http://marvel.wikia.com/shang-chi_(earth-616)#
+## 123 http://marvel.wikia.com/james_santini_(earth-616)#
+## 124 http://marvel.wikia.com/emery_schaub_(earth-616)#
+## 125 http://marvel.wikia.com/jeanne_foucault_(earth-616)#
+## 126 http://marvel.wikia.com/fiona_(inhuman)_(earth-616)#
+## 127 http://marvel.wikia.com/jennifer_takeda_(earth-616)#
+## 128 http://marvel.wikia.com/hollow_(earth-616)#
+## 129 http://marvel.wikia.com/julie_power_(earth-616)#
+## 130 http://marvel.wikia.com/alani_ryan_(earth-616)#
+## 131 http://marvel.wikia.com/ken_mack_(earth-616)#
+## 132 http://marvel.wikia.com/humberto_lopez_(earth-616)#
+## 133 http://marvel.wikia.com/johnathon_gallo_(earth-616)#
+## 134 http://marvel.wikia.com/lyra_(earth-8009)#
+## 135 http://marvel.wikia.com/anya_corazon_(earth-616)#
+## 136 http://marvel.wikia.com/brandon_sharpe_(earth-616)#
+## 137 http://marvel.wikia.com/kevin_masterson_(earth-616)#
+## 138 http://marvel.wikia.com/michiko_musashi_(earth-616)#
+## 139 http://marvel.wikia.com/takashi_matsuya_(earth-616)#
+## 140 http://marvel.wikia.com/daisy_johnson_(earth-616)#
+## 141 http://marvel.wikia.com/ororo_munroe_(earth-616)#
+## 142 http://marvel.wikia.com/matthew_murdock_(earth-616)#
+## 143 http://marvel.wikia.com/eugene_thompson_(earth-616)#
+## 144 http://marvel.wikia.com/otto_octavius_(earth-616)#
+## 145
+http://marvel.wikia.com/alexander_summers_(earth-616)#
+## 146 http://marvel.wikia.com/samuel_guthrie_(earth-616)#
+## 147
+http://marvel.wikia.com/roberto_da_costa_(earth-616)#
+## 148 http://marvel.wikia.com/eden_fesi_(earth-616)#
+## 149
+http://marvel.wikia.com/captain_universe_(earth-616)#
+## 150 http://marvel.wikia.com/isabel_kane_(earth-616)#
+## 151 http://marvel.wikia.com/marcus_milton_(earth-13034)#
+## 152
+http://marvel.wikia.com/rogue_(anna_marie)_(earth-616)#
+## 153 http://marvel.wikia.com/shiro_yoshida_(earth-616)#
+## 154 http://marvel.wikia.com/ex_nihilo_(earth-616)#
+## 155
+http://marvel.wikia.com/abyss_(ex_nihilo%27s)_(earth-616)#
+## 156 http://marvel.wikia.com/nightmask_(earth-616)#
+## 157 http://marvel.wikia.com/kevin_connor_(earth-616)#
+## 158 http://marvel.wikia.com/sam_alexander_(earth-616)#
+## 159 http://marvel.wikia.com/america_chavez_(earth-616)#
+## 160
+http://marvel.wikia.com/loki_laufeyson_(ikol)_(earth-616)#
+## 161 http://marvel.wikia.com/david_alleyne_(earth-616)#
+## 162
+http://marvel.wikia.com/nicholas_fury,_jr._(earth-616)#
+## 163 http://marvel.wikia.com/phillip_coulson_(earth-616)#
+## 164 http://marvel.wikia.com/tony_masters_(earth-616)#
+## 165 http://marvel.wikia.com/victor_mancha_(earth-616)#
+## 166 http://marvel.wikia.com/monica_chang_(earth-616)#
+## 167
+http://marvel.wikia.com/doombot_(avenger)_(earth-616)#
+## 168 http://marvel.wikia.com/alexis_(earth-616)#
+## 169 http://marvel.wikia.com/eric_brooks_(earth-616)#
+## 170 http://marvel.wikia.com/adam_brashear_(earth-616)#
+## 171 http://marvel.wikia.com/victor_alvarez_(earth-616)#
+## 172 http://marvel.wikia.com/ava_ayala_(earth-616)#
+## 173 http://marvel.wikia.com/kaluu_(earth-616)#
+## name.alias appearances current. gender
+probationary.introl
+## 1 henry jonathan &quot;hank&quot; pym 1269 yes male
+## 2 janet van dyne 1165 yes female
+## 3 anthony edward &quot;tony&quot; stark 3068 yes male
+## 4 robert bruce banner 2089 yes male
+## 5 thor odinson 2402 yes male
+## 6 richard milhouse jones 612 yes male
+## 7 steven rogers 3458 yes male
+## 8 clinton francis barton 1456 yes male
+## 9 pietro maximoff 769 yes male
+## 10 wanda maximoff 1214 yes female
+## 11 jacques duquesne 115 no male
+## 12 heracles 741 yes male
+## 13 t&#39;challa 780 no male
+## 14 victor shade (alias) 1036 yes male
+## 15 dane whitman 482 no male
+## 16 natalia alianovna romanova 1112 yes female
+## 17 brandt 160 no female
+## 18 henry p. mccoy 1886 no male jul-75
+## 19 heather douglas 332 no female jul-75
+## 20 patsy walker 557 no female nov-75
+## 21 matthew liebowitz (birth name) 197 no male
+## 22 robert l. frank sr.  106 no male apr-77
+## 23 simon williams 692 yes male apr-77
+## 24 yondu udonta 109 no male
+## 25 martinex t&#39;naga 100 no male
+## 26 charlie-27 132 no male
+## 27 nicholette gold 108 no female
+## 28 stakar 100 no male
+## 29 vance astrovik 156 no male
+## 30 mar-vell 254 no male
+## 31 carol susan jane danvers 935 yes female
+## 32 samuel thomas wilson 576 yes male
+## 33 jocasta 141 yes female jul-80
+## 34 greer grant nelson 355 yes female
+## 35 jennifer walters 933 yes female
+## 36 monica rambeau 348 yes female jan-83
+## 37 eros 206 no male jun-83
+## 38 james r. rhodes 533 no male may-84
+## 39 barbara barton (nee morse) 374 no female jun-84
+## 40 moira brandon 2 no female
+## 41 benjamin jacob grimm 2305 no male
+## 42 bonita juarez 83 no female
+## 43 marc spector 402 no male sep-87
+## 44 john f. walker 352 no male
+## 45 jim hammond (alias) 565 no male
+## 46 miguel santos 112 no male
+## 47 julia carpenter 218 no female
+## 48 x-51 149 no male
+## 49 christopher powell 168 no male
+## 50 namor mckenzie 1561 no male
+## 51 scott edward harris lang 217 no male jan-87
+## 52 anthony ludgate druid 158 no male
+## 53 marrina smallwood 86 no female
+## 54 ravonna lexus renslayer 41 no female
+## 55 rita demara 68 no female
+## 56 dennis dunphy 70 no male
+## 57 61 no male
+## 58 reed richards 2125 yes male
+## 59 susan richards (nee storm) 1761 no male
+## 60 wendell elvis vaughn 293 no male
+## 61 ashley crawford 36 yes female
+## 62 22 no female
+## 63 demarr davis 31 yes male
+## 64 val ventura 34 yes male
+## 65 craig hollis 33 yes male
+## 66 gene lorrene 4 no male
+## 67 dorreen green 47 no female
+## 68 7 no male
+## 69 doug taggert 3 no male
+## 70 16 no female
+## 71 wade wilson 575 no male
+## 72 greg willis 58 no male
+## 73 circe 237 no female
+## 74 peter benjamin parker 4333 yes male
+## 75 walter newell 126 no male
+## 76 elvin haliday 158 no male feb-91
+## 77 william baker 355 no male feb-91
+## 78 crystal amaquelin maximoff 517 no female aug-91
+## 79 eric kevin masterson 202 no male
+## 80 phillip javert 31 no male
+## 81 28 no female
+## 82 50 no female
+## 83 anthony edward stark 27 no male
+## 84 &quot;giulietta nefaria&quot; 18 no female
+## 85 vance astrovik 302 no male
+## 86 angelica jones 330 no female
+## 87 delroy garrett jr.  101 no male
+## 88 maria de guadalupe santiago 43 no female
+## 89 jonathan hart 126 no male
+## 90 kelsey leigh shorr 24 no female
+## 91 carl lucas 886 yes male
+## 92 veranke 159 no female
+## 93 james &quot;logan&quot; howlett 3130 yes male
+## 94 robert reynolds 241 no male
+## 95 maya lopez 67 no female
+## 96 nathaniel richards 23 no male
+## 97 elijah bradley 103 no male
+## 98 william &quot;billy&quot; kaplan 123 yes male
+## 99 dorrek viii/theodore &quot;teddy&quot; altman 110 yes male
+## 100 cassie lang 160 no female
+## 101 katherine &quot;kate&quot; bishop 132 yes female
+## 102 alias: jonas 121 no male
+## 103 thomas &quot;tommy&quot; shepherd 59 yes male
+## 104 daniel thomas rand k&#39;ai 629 no male
+## 105 doctor stephen vincent strange 1324 no male
+## 106 ares 236 no male
+## 107 james buchanan barnes 663 no male
+## 108 jessica miriam drew 525 yes female
+## 109 jessica jones 205 yes female
+## 110 amadeus cho 108 no male
+## 111 maria hill 359 yes female
+## 112 robbie baldwin 299 no male
+## 113 sharon carter 333 no female
+## 114 eric o&#39;grady 88 no male
+## 115 brunnhilde 369 no female
+## 116 richard rider 380 no male
+## 117 brian braddock 545 no male
+## 118 dennis sykes 6 no male
+## 119 noh-varr 126 yes male
+## 120 thaddeus ross 417 no male
+## 121 john aman 31 yes male
+## 122 shang-chi 310 yes male
+## 123 james santini 40 yes male
+## 124 emery schaub 26 yes male
+## 125 jeanne foucault 63 yes female
+## 126 fiona 2 yes female
+## 127 jennifer takeda 73 yes female
+## 128 yvette 22 yes female
+## 129 julie power 153 yes female
+## 130 alani ryan 73 yes female
+## 131 ken mack 59 no male
+## 132 humberto lopez 66 yes male
+## 133 johnny gallo 43 yes male
+## 134 lyra 55 yes female
+## 135 anya corazon 108 yes female
+## 136 brandon sharpe 64 yes male
+## 137 kevin masterson 62 yes male
+## 138 michiko musashi 94 yes female
+## 139 taki matsuya 18 yes male
+## 140 daisy johnson 81 no female
+## 141 ororo munroe 1598 no female
+## 142 matt murdock 1375 no male
+## 143 flash thompson 746 yes male
+## 144 otto octavius 561 no male
+## 145 alex summers 592 yes male
+## 146 samuel guthrie 679 yes male
+## 147 roberto da costa 491 yes male
+## 148 eden fesi 65 yes male
+## 149 55 yes male
+## 150 izzy kane 44 yes female
+## 151 marcus milton 65 yes male
+## 152 anna marie 877 yes female
+## 153 shiro yoshida 176 yes male
+## 154 24 yes male
+## 155 25 yes female
+## 156 adam 35 yes male
+## 157 kevin kale connor 44 yes male
+## 158 sam alexander 78 yes male
+## 159 america chavez 22 yes female
+## 160 loki laufeyson 77 no male
+## 161 david alleyne 115 yes male
+## 162 nicholas fury, jr., marcus johnson 77 yes male
+## 163 phillip coulson 69 yes male
+## 164 tony masters 173 no male
+## 165 victor mancha 75 yes male
+## 166 monica chang 12 yes female
+## 167 14 yes male
+## 168 alexis 13 yes female
+## 169 eric brooks 198 yes male
+## 170 adam brashear 29 yes male
+## 171 victor alvarez 45 yes male
+## 172 ava ayala 49 yes female
+## 173 kaluu 35 yes male
+## full.reserve.avengers.intro year years.since.joining
+honorary death1 return1 death2 return2
+## 1 sep-63 1963 52 full yes no
+## 2 sep-63 1963 52 full yes yes
+## 3 sep-63 1963 52 full yes yes
+## 4 sep-63 1963 52 full yes yes
+## 5 sep-63 1963 52 full yes yes yes no
+## 6 sep-63 1963 52 honorary no
+## 7 mar-64 1964 51 full yes yes
+## 8 may-65 1965 50 full yes yes yes yes
+## 9 may-65 1965 50 full yes yes
+## 10 may-65 1965 50 full yes yes
+## 11 sep-65 1965 50 full yes yes
+## 12 oct-67 1967 48 full no
+## 13 may-68 1968 47 full no
+## 14 nov-68 1968 47 full yes yes
+## 15 dec-69 1969 46 full no
+## 16 may-73 1973 42 full yes yes
+## 17 aug-73 1973 42 full yes yes
+## 18 sep-76 1976 39 full no
+## 19 sep-76 1976 39 full yes yes yes yes
+## 20 sep-76 1976 39 full yes yes
+## 21 aug-75 1975 40 full yes yes yes no
+## 22 jul-78 1978 37 full yes no
+## 23 mar-79 1979 36 full yes yes
+## 24 feb-78 1978 37 honorary no
+## 25 feb-78 1978 37 honorary no
+## 26 feb-78 1978 37 honorary no
+## 27 feb-78 1978 37 honorary no
+## 28 feb-78 1978 37 honorary no
+## 29 feb-78 1978 37 honorary no
+## 30 jul-78 1978 37 full yes yes yes yes
+## 31 apr-79 1979 36 full no
+## 32 jun-79 1979 36 full no
+## 33 nov-88 1988 27 full yes yes yes yes
+## 34 sep-81 1981 34 full no
+## 35 jul-82 1982 33 full yes yes
+## 36 may-83 1983 32 full no
+## 37 may-84 1984 31 full no
+## 38 sep-84 1984 31 full no
+## 39 sep-84 1984 31 full yes yes
+## 40 nov-93 1993 22 honorary yes no
+## 41 jun-86 1986 29 full yes yes
+## 42 sep-87 1987 28 full no
+## 43 jun-88 1988 27 full no
+## 44 may-89 1989 26 full no
+## 45 nov-89 1989 26 full yes yes
+## 46 apr-91 1991 24 full no
+## 47 sep-92 1992 23 full no
+## 48 jun-92 1992 23 full yes yes
+## 49 may-93 1993 22 full no
+## 50 dec-85 1985 30 full yes yes
+## 51 3-feb 2003 12 full yes yes
+## 52 apr-87 1987 28 honorary yes yes yes yes
+## 53 dec-87 1987 28 full yes yes yes yes
+## 54 may-88 1988 27 full yes yes yes no
+## 55 nov-88 1988 27 honorary yes yes
+## 56 jan-88 1988 27 full yes yes yes no
+## 57 feb-89 1989 26 full yes yes
+## 58 feb-89 1989 26 full no
+## 59 feb-89 1989 26 full no
+## 60 oct-89 1989 26 full yes yes
+## 61 jul-89 1989 26 full no
+## 62 jul-89 1989 26 full yes no
+## 63 jul-89 1989 26 full yes yes
+## 64 jul-89 1989 26 full no
+## 65 jul-89 1989 26 full no
+## 66 5-apr 2005 10 full no
+## 67 5-may 2005 10 full no
+## 68 5-may 2005 10 full yes no
+## 69 5-may 2005 10 full yes no
+## 70 5-jul 2005 10 full no
+## 71 7-sep 2007 8 full yes no
+## 72 9-aug 2009 6 full no
+## 73 feb-90 1990 25 full no
+## 74 apr-90 1990 25 full yes yes yes yes
+## 75 jul-90 1990 25 full no
+## 76 1900 115 probationary no
+## 77 1900 115 probationary yes yes no
+## 78 jan-92 1992 23 full no
+## 79 jan-92 1992 23 full yes yes yes no
+## 80 dec-92 1992 23 honorary no
+## 81 jun-93 1993 22 honorary no
+## 82 jul-93 1993 22 honorary yes yes yes no
+## 83 feb-96 1996 19 full yes no
+## 84 apr-96 1996 19 honorary yes no
+## 85 may-98 1998 17 full no
+## 86 may-98 1998 17 full no
+## 87 apr-00 2000 15 full no
+## 88 jul-00 2000 15 full no
+## 89 1-aug 2001 14 full yes yes yes yes
+## 90 4-jun 2004 11 full no
+## 91 5-mar 2005 10 full no
+## 92 5-mar 2005 10 full yes no
+## 93 5-jun 2005 10 full yes no
+## 94 5-oct 2005 10 full yes yes
+## 95 5-nov 2005 10 full yes yes yes no
+## 96 5-apr 2005 10 full no
+## 97 5-apr 2005 10 full no
+## 98 5-apr 2005 10 full no
+## 99 5-apr 2005 10 full no
+## 100 5-jun 2005 10 full yes yes
+## 101 5-jun 2005 10 full no
+## 102 6-feb 2006 9 full yes no
+## 103 6-jun 2006 9 full no
+## 104 7-feb 2007 8 full no
+## 105 7-feb 2007 8 full no
+## 106 7-mar 2007 8 full yes yes yes no
+## 107 8-dec 2008 7 full no
+## 108 8-dec 2008 7 full no
+## 109 10-aug 2010 5 full no
+## 110 9-dec 2009 6 full no
+## 111 10-may 2010 5 full no
+## 112 10-jun 2010 5 full no
+## 113 10-may 2010 5 full yes yes
+## 114 10-may 2010 5 full yes no
+## 115 10-may 2010 5 full no
+## 116 10-may 2010 5 full yes no
+## 117 10-may 2010 5 full no
+## 118 10-sep 2010 5 full yes no
+## 119 10-jun 2010 5 full no
+## 120 11-jun 2011 4 full yes yes
+## 121 10-dec 2010 5 full no
+## 122 11-apr 2011 4 full no
+## 123 1900 115 academy no
+## 124 1900 115 academy no
+## 125 10-aug 2010 5 academy no
+## 126 1900 115 academy no
+## 127 10-aug 2010 5 academy no
+## 128 1900 115 academy no
+## 129 1900 115 academy no
+## 130 1900 115 academy no
+## 131 10-aug 2010 5 academy yes no
+## 132 10-aug 2010 5 academy yes no
+## 133 1900 115 academy no
+## 134 1900 115 academy no
+## 135 1900 115 academy no
+## 136 10-aug 2010 5 academy no
+## 137 1900 115 academy no
+## 138 1900 115 academy no
+## 139 1900 115 academy no
+## 140 12-jan 2012 3 full no
+## 141 12-jan 2012 3 full no
+## 142 11-nov 2011 4 full no
+## 143 12-apr 2012 3 honorary no
+## 144 13-jan 2013 2 full yes no
+## 145 12-dec 2012 3 full no
+## 146 13-feb 2013 2 full no
+## 147 13-feb 2013 2 full no
+## 148 13-feb 2013 2 full no
+## 149 13-feb 2013 2 full no
+## 150 13-feb 2013 2 full no
+## 151 13-feb 2013 2 full yes no
+## 152 13-apr 2013 2 full no
+## 153 13-may 2013 2 full yes yes
+## 154 13-oct 2013 2 full yes no
+## 155 13-oct 2013 2 full yes no
+## 156 13-oct 2013 2 full yes no
+## 157 13-oct 2013 2 full yes no
+## 158 15-feb 2015 0 honorary no
+## 159 13-jul 2013 2 full no
+## 160 13-jul 2013 2 full no
+## 161 13-sep 2013 2 full no
+## 162 13-apr 2013 2 full no
+## 163 13-apr 2013 2 full no
+## 164 13-may 2013 2 full no
+## 165 13-sep 2013 2 full yes yes
+## 166 13-sep 2013 2 full no
+## 167 13-sep 2013 2 full no
+## 168 13-nov 2013 2 full no
+## 169 13-nov 2013 2 full no
+## 170 14-jan 2014 1 full no
+## 171 14-jan 2014 1 full no
+## 172 14-jan 2014 1 full no
+## 173 15-jan 2015 0 full no
+## death3 return3 death4 return4 death5 return5
+## 1
+## 2
+## 3
+## 4
+## 5
+## 6
+## 7
+## 8
+## 9
+## 10
+## 11
+## 12
+## 13
+## 14
+## 15
+## 16
+## 17
+## 18
+## 19
+## 20
+## 21
+## 22
+## 23
+## 24
+## 25
+## 26
+## 27
+## 28
+## 29
+## 30 yes no
+## 31
+## 32
+## 33 yes yes yes yes yes yes
+## 34
+## 35
+## 36
+## 37
+## 38
+## 39
+## 40
+## 41
+## 42
+## 43
+## 44
+## 45
+## 46
+## 47
+## 48
+## 49
+## 50
+## 51
+## 52
+## 53
+## 54
+## 55
+## 56
+## 57
+## 58
+## 59
+## 60
+## 61
+## 62
+## 63
+## 64
+## 65
+## 66
+## 67
+## 68
+## 69
+## 70
+## 71
+## 72
+## 73
+## 74
+## 75
+## 76
+## 77
+## 78
+## 79
+## 80
+## 81
+## 82
+## 83
+## 84
+## 85
+## 86
+## 87
+## 88
+## 89
+## 90
+## 91
+## 92
+## 93
+## 94
+## 95
+## 96
+## 97
+## 98
+## 99
+## 100
+## 101
+## 102
+## 103
+## 104
+## 105
+## 106
+## 107
+## 108
+## 109
+## 110
+## 111
+## 112
+## 113
+## 114
+## 115
+## 116
+## 117
+## 118
+## 119
+## 120
+## 121
+## 122
+## 123
+## 124
+## 125
+## 126
+## 127
+## 128
+## 129
+## 130
+## 131
+## 132
+## 133
+## 134
+## 135
+## 136
+## 137
+## 138
+## 139
+## 140
+## 141
+## 142
+## 143
+## 144
+## 145
+## 146
+## 147
+## 148
+## 149
+## 150
+## 151
+## 152
+## 153
+## 154
+## 155
+## 156
+## 157
+## 158
+## 159
+## 160
+## 161
+## 162
+## 163
+## 164
+## 165
+## 166
+## 167
+## 168
+## 169
+## 170
+## 171
+## 172
+## 173
+## notes
+## 1 merged with ultron in rage of ultron vol. 1. a funeral
+was held.
+## 2 dies in secret invasion v1:i8. actually was sent tto
+microverse later recovered
+## 3 death: &quot;later while under the influence of immortus
+stark committed a number of horrible acts and was killed.&#39;
+this set up young tony. franklin richards later brought him
+back
+## 4 dies in ghosts of the future arc. however &quot;he had
+actually used a hidden pantheon base to survive&quot;
+## 5 dies in fear itself brought back because that&#39;s kind
+of the whole point. second death in time runs out has not
+yet returned
+## 6 na
+## 7 dies at the end of civil war. later comes back.
+## 8 dies in exploding kree ship in averngers vol. 1 issue
+502. brought back by scarlet witch. dies again in house of
+m vol 1 issue 7. is later brought back.
+## 9 dies in house of m vol 1 issue 7. later comes back
+## 10 dies in uncanny_avengers_vol_1_14. later comes back
+## 11 dies in avengers_vol_1_130. brought back by the chaos
+king
+## 12 na
+## 13 na
+## 14 dies in avengers_vol_1_500. is eventually rebuilt.
+## 15 na
+## 16 killed by the hand. later revived with the stone of
+the chaste.
+## 17 dies in silver_surfer_vol_3_3. actually &quot;fragments of
+her essence were spread out all across the universe&quot;
+## 18 na
+## 19 dies in defenders_vol_1_152. later &#39;obtained a new
+body.&#39; dies in annihilation:_conquest_vol_1_3. comes back
+as &quot;as before&quot; also was once named madame macevil because
+lol.
+## 20 died during time on defenders. eventually ressurected
+by villian grim reaper along with mockingbird to fight the
+avengers.
+## 21 died during return_to_the_old_west. resurrected by
+she hulk in negotiation with time variance authority. as a
+time traveller he died in 1938. did not return
+## 22 died in vision_and_the_scarlet_witch_vol_1_2. did not
+return however he was eventually cloned but the clone was
+killed immediately.
+## 23 died in avengers_vol_1_9. actually just in a
+death-like coma.
+## 24 na
+## 25 na
+## 26 na
+## 27 na
+## 28 na
+## 29 na
+## 30 the bad penny of the marvel universe. first killed in
+secret invasion. revived during the chaos war. died again
+during aformentioned chaos war. resurrected by the kree
+empire using them&#39;kraan crystal. third death during
+avengers vs. x-men. has not return
+## 31 na
+## 32 na
+## 33 from her article: death1: &quot;defeated ultron and
+reversed the process leaving jocasta a mindless husk.&quot;
+return 1: &quot;ultron later revived jocasta with a remote link
+activating the mental residue the wasp left behind&quot; death
+2: &quot;sacrificing herself to try to ki
+## 34 na
+## 35 dies during red hulk saga. returns when lyra
+infiltrates intelligenica and finds her in statis
+## 36 na
+## 37 na
+## 38 na
+## 39 killed by mephisto. after secret invasion it turns
+out she was actually being impersonated by a skrull the
+whole time and was alive and well.
+## 40 died in her second appearance earns honorary avengers
+status doing so. stays dead.
+## 41 once killed during a battle with doctor doom.&#39;
+brought back by the ff when they literally went to heaven
+to get him.
+## 42 na
+## 43 na but he he did die and return to get his powers
+prior to joining the avengers.
+## 44 na
+## 45 dies during new invaders. was &quot;was revived as a
+living weapon the thinker intended to sell.&quot; prior to
+joining the avengers he had died like 2 times in the 40s.
+## 46 na: has not died since joing the avengers but prior
+to joining he fought the west coast avengers and seemingly
+died. later turned up under control of a villain
+## 47 na
+## 48 died in deathlok vol 2 #5. jk that was actually just
+a life model decoy
+## 49 na
+## 50 namor was presumed killed in the battle with
+atlantean barbarians. had actually survived and turned up
+in the south pacific
+## 51 died in avengers:_disassembled. was brought back in
+the young avengers: children&#39;s crusade arc because time
+travel but take my word for it it was actually kind of well
+done.
+## 52 shot with a breathing gun and corpse dumped in trash.
+revived by the grim reaper. helped avengers defeat the
+reaper so his spirit could remain at peace. later
+completely revived by the chaos king.
+## 53 killed by namor with the ebony blade. returned when
+the master put her in a statis tube. death 2 was when namor
+mercy killed her. returned to life a second time by the
+chaos king.
+## 54 killed in avengers_vol_1_24. revived by the
+grandmaster. died in avengers:_forever_vol_1_3.
+## 55 killed by iron man when he was controlled by
+immortus. revived during chaos war.
+## 56 died in captain_america_348. actually &quot;dunphy
+miraculously survived the crash and lived with an inuit
+tribe.&quot; second death when killed by sharon carter.
+## 57 killed by neut who was working for immortus. reborn
+into a new body.
+## 58 na
+## 59 na
+## 60 killed by the cosmic assassin. actually turned into a
+being composed of pure energy.
+## 61 na
+## 62 died in great_lakes_avengers_vol_1_1. has not
+returned
+## 63 sacrificed self so that mr. immortal could stop the
+villain maelstrom. returned as the angel of death.
+## 64 na
+## 65 christ; where to begin. his superpower is that he
+cannot die when he dies he immediately comes back. the
+wikia inventories 24 deaths. these will be excluded from
+the analysis.
+## 66 na
+## 67 na
+## 68 killed by leather boy
+## 69 accidently killed by zaran
+## 70 na
+## 71 died during incursion. it&#39;s not ever particulalry
+clear if he ever joined an avengers team besides one issue
+so his inclusion here is specious at best.
+## 72 died on battleworld and came back prior to joining
+avengers
+## 73 na
+## 74 since joining the new avengers: first death killed by
+morlun. ressurected in a brand new body. died in amazing
+spider-man #700. eventually mainfested in his body that
+octavious stole and then took over again.
+## 75 na
+## 76 na
+## 77 died in identity_disc_vol_1_1. later was revealed to
+be alive and working along with the vulture.
+## 78 na
+## 79 became posessed died to purge self of corruption.
+revived as undead avenger minion of the grim reaper.
+returned to the spirit world by the scarlet witch. has
+since stayed dead.
+## 80 na
+## 81 na
+## 82 reduced her to a pile of bones and organsby vargas.
+brought back by chaos king. died second time in
+chaos_war:_dead_avengers_vol_1_3
+## 83 merged with 616 tony stark
+## 84 whitney killed was a clone possibly this incarnation
+of masque&#39;
+## 85 na
+## 86 na
+## 87 na
+## 88 na
+## 89 first died in a zero energy explosion in space. body
+was apparently reanimated by scarlet witch. abruptly
+exploded killing scott lang as well. second return in
+marvel_zombies_supreme_vol_1_2.
+## 90 na
+## 91 na
+## 92 killed by norman osbourne. has not returned.
+## 93 died in death_of_wolverine_vol_1_4. has not yet
+returned
+## 94 died during seige. brought back to life by the
+apocalypse twins as a horseman of death in
+uncanny_avengers_vol_1_9.
+## 95 first death &#39;had been murdered in a fight with
+elektra.&#39; &quot;revived by elektra and the hand with their dark
+magic.&quot; died in most recent run of moon knight has not yet
+returned.
+## 96 na is actually kang but let&#39;s just not go there.
+## 97 na
+## 98 na
+## 99 na
+## 100 dies in young avengers: the childrens crusade when
+she is killed by doom. eventually reborn years later.
+## 101 na
+## 102 dies in young avengers the children&#39;s crusade
+## 103 na
+## 104 na
+## 105 na
+## 106 ripped in half by the sentry during seige. revived
+during chaos king. then killedby chaos king.
+## 107 na
+## 108 na
+## 109 na
+## 110 na
+## 111 na
+## 112 na
+## 113 died in captain_america_vol_7_10. it&#39;s not clear how
+she survived but yeah she totally did.
+## 114 died in secret_avengers_vol_1_22.
+## 115 na but died/came back during ragnarok prior to
+becoming an avenger
+## 116 died in guardians_of_the_galaxy_vol_3_20.
+## 117 na
+## 118 died in heroic_age:_one_month_to_live_vol_1_5 stayed
+dead.
+## 119 na
+## 120 died in circle of four arc. made a deal with
+mephisto and came back.
+## 121 na
+## 122 na
+## 123 na
+## 124 na
+## 125 na
+## 126 na
+## 127 na
+## 128 na
+## 129 na
+## 130 na
+## 131 died in murderworld during avengers arena
+## 132 died in murderworld during avengers arena
+## 133 na
+## 134 na
+## 135 na
+## 136 na
+## 137 na
+## 138 na
+## 139 na
+## 140 na
+## 141 na
+## 142 na
+## 143 na
+## 144 died in superior_spider-man_vol_1_30.
+## 145 na
+## 146 na
+## 147 na
+## 148 na
+## 149 na
+## 150 na
+## 151 died in new_avengers_vol_3_32.
+## 152 na
+## 153 died in uncanny_avengers_vol_1_22. returned when &#39;he
+was able to use his power to transform his body into a
+state of pure energy &#39;
+## 154 died in new_avengers_vol_3_32
+## 155 died in new_avengers_vol_3_32
+## 156 died in new_avengers_vol_3_32
+## 157 died in new_avengers_vol_3_32
+## 158 na
+## 159 na
+## 160 na
+## 161 na
+## 162 na
+## 163 na
+## 164 na
+## 165 died in avengers_a.i._vol_1_4. returned in
+avengers_a.i._vol_1_9.
+## 166 na
+## 167 na
+## 168 na
+## 169 na
+## 170 na
+## 171 na
+## 172 na
+## 173 na</code></pre>
+<pre class="r"><code>grl &lt;- lm(`years.since.joining`~`appearances`, data = avengers_csv)
+coef(grl)</code></pre>
+<pre><code>##  (Intercept)  appearances 
+## 25.306652558  0.003014744</code></pre>
+<pre class="r"><code>#the coefficient estimates tell us that for every year since joining the appearances number increases .003.
+#***help! how do I interpret this?
+cov(avengers_csv$years.since.joining, avengers_csv$appearances)/var(avengers_csv$years.since.joining)</code></pre>
+<pre><code>## [1] 1.502022</code></pre>
+<pre class="r"><code>#plotting the regression
+avengers_csv%&gt;%ggplot(aes(x=years.since.joining,y=appearances))+geom_point()+geom_smooth(method =&#39;lm&#39;,se=F)</code></pre>
+<p><img src="/project/project2_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>SST &lt;- sum((avengers_csv$appearances-mean(avengers_csv$appearances))^2) #SS Total
+SSR &lt;- sum((grl$fitted.values-mean(avengers_csv$appearances))^2) #SS Regress
+SSE &lt;- sum(grl$residuals^2) #SS Error
+SSR/SST</code></pre>
+<pre><code>## [1] 0.3285621</code></pre>
+<pre class="r"><code>#The model explains 25.3 percent of the variation, this is the value of the intercept.
+#with robust standard errors,re-computing the regression
+coeftest(grl, vcov=vcovHC(grl))[,1:2]</code></pre>
+<pre><code>##                 Estimate  Std. Error
+## (Intercept) 25.306652558 2.912983904
+## appearances  0.003014744 0.002506308</code></pre>
+<pre class="r"><code>#checking for normailty
+resids&lt;-lm(avengers_csv$appearances~avengers_csv$years.since.joining, data=avengers_csv)$residuals
+ggplot()+geom_histogram(aes(resids),bins=10)</code></pre>
+<p><img src="/project/project2_files/figure-html/unnamed-chunk-4-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fitted&lt;-lm(avengers_csv$appearances~avengers_csv$years.since.joining, data=avengers_csv)$fitted.values
+ggplot()+geom_point(aes(fitted,resids))</code></pre>
+<p><img src="/project/project2_files/figure-html/unnamed-chunk-4-3.png" width="768" style="display: block; margin: auto;" />
+##Question 4</p>
+<pre class="r"><code>avengers_csv</code></pre>
+<pre><code>## url
+## 1 http://marvel.wikia.com/henry_pym_(earth-616)
+## 2 http://marvel.wikia.com/janet_van_dyne_(earth-616)
+## 3 http://marvel.wikia.com/anthony_stark_(earth-616)
+## 4
+http://marvel.wikia.com/robert_bruce_banner_(earth-616)
+## 5 http://marvel.wikia.com/thor_odinson_(earth-616)
+## 6 http://marvel.wikia.com/richard_jones_(earth-616)
+## 7 http://marvel.wikia.com/steven_rogers_(earth-616)
+## 8 http://marvel.wikia.com/clint_barton_(earth-616)
+## 9 http://marvel.wikia.com/pietro_maximoff_(earth-616)
+## 10 http://marvel.wikia.com/wanda_maximoff_(earth-616)
+## 11 http://marvel.wikia.com/jacques_duquesne_(earth-616)
+## 12 http://marvel.wikia.com/hercules_(earth-616)
+## 13 http://marvel.wikia.com/t%27challa_(earth-616)
+## 14 http://marvel.wikia.com/vision_(earth-616)
+## 15 http://marvel.wikia.com/dane_whitman
+## 16 http://marvel.wikia.com/natalia_romanova_(earth-616)#
+## 17 http://marvel.wikia.com/mantis_(earth-616)#
+## 18 http://marvel.wikia.com/henry_mccoy_(earth-616)#
+## 19 http://marvel.wikia.com/heather_douglas_(earth-616)#
+## 20 http://marvel.wikia.com/patricia_walker_(earth-616)#
+## 21 http://marvel.wikia.com/matthew_hawk_(earth-616)#
+## 22 http://marvel.wikia.com/robert_frank_(earth-616)#
+## 23 http://marvel.wikia.com/simon_williams_(earth-616)#
+## 24 http://marvel.wikia.com/yondu_udonta_(earth-691)#
+## 25
+http://marvel.wikia.com/martinex_t%27naga_(earth-691)#
+## 26 http://marvel.wikia.com/charlie-27_(earth-691)#
+## 27 http://marvel.wikia.com/nicholette_gold_(earth-691)#
+## 28 http://marvel.wikia.com/stakar_ogord_(earth-691)#
+## 29 http://marvel.wikia.com/vance_astro_(earth-691)#
+## 30 http://marvel.wikia.com/mar-vell_(earth-616)#
+## 31 http://marvel.wikia.com/carol_danvers_(earth-616)#
+## 32 http://marvel.wikia.com/samuel_wilson_(earth-616)#
+## 33 http://marvel.wikia.com/jocasta_(earth-616)#
+## 34 http://marvel.wikia.com/greer_nelson_(earth-616)#
+## 35 http://marvel.wikia.com/jennifer_walters_(earth-616)#
+## 36 http://marvel.wikia.com/monica_rambeau_(earth-616)#
+## 37 http://marvel.wikia.com/eros_(earth-616)#
+## 38 http://marvel.wikia.com/james_rhodes_(earth-616)#
+## 39 http://marvel.wikia.com/barbara_morse_(earth-616)#
+## 40 http://marvel.wikia.com/moira_brandon_(earth-616)#
+## 41 http://marvel.wikia.com/benjamin_grimm_(earth-616)#
+## 42 http://marvel.wikia.com/bonita_juarez_(earth-616)#
+## 43 http://marvel.wikia.com/marc_spector_(earth-616)#
+## 44 http://marvel.wikia.com/john_walker_(earth-616)#
+## 45
+http://marvel.wikia.com/human_torch_(android)_(earth-616)#
+## 46 http://marvel.wikia.com/miguel_santos_(earth-616)#
+## 47 http://marvel.wikia.com/julia_carpenter_(earth-616)#
+## 48 http://marvel.wikia.com/2zp45-9-x-51_(earth-616)#
+## 49 http://marvel.wikia.com/chris_powell_(earth-616)#
+## 50 http://marvel.wikia.com/namor_mckenzie_(earth-616)#
+## 51 http://marvel.wikia.com/scott_lang_(earth-616)#
+## 52 http://marvel.wikia.com/anthony_druid_(earth-616)#
+## 53
+http://marvel.wikia.com/marrina_smallwood_(earth-616)#
+## 54
+http://marvel.wikia.com/ravonna_renslayer_(earth-6311)#
+## 55 http://marvel.wikia.com/rita_demara_(earth-616)#
+## 56 http://marvel.wikia.com/dennis_dunphy_(earth-616)#
+## 57 http://marvel.wikia.com/gilgamesh_(earth-616)#
+## 58 http://marvel.wikia.com/reed_richards_(earth-616)#
+## 59 http://marvel.wikia.com/susan_storm_(earth-616)#
+## 60 http://marvel.wikia.com/wendell_vaughn_(earth-616)#
+## 61 http://marvel.wikia.com/ashley_crawford_(earth-616)#
+## 62 http://marvel.wikia.com/dinah_soar_(earth-616)#
+## 63 http://marvel.wikia.com/demarr_davis_(earth-616)#
+## 64 http://marvel.wikia.com/val_ventura_(earth-616)#
+## 65 http://marvel.wikia.com/craig_hollis_(earth-616)#
+## 66 http://marvel.wikia.com/gene_lorrene_(earth-616)#
+## 67 http://marvel.wikia.com/doreen_green_(earth-616)#
+## 68 http://marvel.wikia.com/monkey_joe_(earth-616)#
+## 69 http://marvel.wikia.com/doug_taggert_(earth-616)#
+## 70 http://marvel.wikia.com/tippy-toe_(earth-616)#
+## 71 http://marvel.wikia.com/wade_wilson_(earth-616)#
+## 72 http://marvel.wikia.com/greg_willis_(earth-616)#
+## 73 http://marvel.wikia.com/sersi_(earth-616)#
+## 74 http://marvel.wikia.com/peter_parker_(earth-616)#
+## 75 http://marvel.wikia.com/walter_newell_(earth-616)#
+## 76 http://marvel.wikia.com/elvin_haliday_(earth-616)#
+## 77 http://marvel.wikia.com/william_baker_(earth-616)#
+## 78
+http://marvel.wikia.com/crystalia_amaquelin_(earth-616)#
+## 79 http://marvel.wikia.com/eric_masterson_(earth-616)#
+## 80 http://marvel.wikia.com/philip_javert_(earth-921)#
+## 81 http://marvel.wikia.com/melissa_darrow_(earth-9201)#
+## 82 http://marvel.wikia.com/deathcry_(earth-616)#
+## 83 http://marvel.wikia.com/anthony_stark_(earth-96020)#
+## 84
+http://marvel.wikia.com/giuletta_nefaria_(masque)_(earth-616)#
+## 85 http://marvel.wikia.com/vance_astrovik_(earth-616)#
+## 86 http://marvel.wikia.com/angelica_jones_(earth-616)#
+## 87
+http://marvel.wikia.com/delroy_garrett_jr._(earth-616)#
+## 88
+http://marvel.wikia.com/maria_de_guadalupe_santiago_(earth-616)#
+## 89 http://marvel.wikia.com/jonathan_hart_(earth-616)#
+## 90 http://marvel.wikia.com/kelsey_leigh_(earth-616)#
+## 91 http://marvel.wikia.com/luke_cage_(earth-616)#
+## 92 http://marvel.wikia.com/veranke_(earth-616)#
+## 93 http://marvel.wikia.com/james_howlett_(earth-616)#
+## 94 http://marvel.wikia.com/robert_reynolds_(earth-616)#
+## 95 http://marvel.wikia.com/maya_lopez_(earth-616)#
+## 96
+http://marvel.wikia.com/nathaniel_richards_(iron_lad)_(earth-6311)#
+## 97 http://marvel.wikia.com/elijah_bradley_(earth-616)#
+## 98 http://marvel.wikia.com/william_kaplan_(earth-616)#
+## 99 http://marvel.wikia.com/dorrek_viii_(earth-616)#
+## 100 http://marvel.wikia.com/cassandra_lang_(earth-616)#
+## 101
+http://marvel.wikia.com/katherine_bishop_(earth-616)#
+## 102 http://marvel.wikia.com/vision_(jonas)_(earth-616)#
+## 103 http://marvel.wikia.com/thomas_shepherd_(earth-616)#
+## 104 http://marvel.wikia.com/daniel_rand_(earth-616)#
+## 105 http://marvel.wikia.com/stephen_strange_(earth-616)#
+## 106 http://marvel.wikia.com/ares_(earth-616)#
+## 107
+http://marvel.wikia.com/james_buchanan_barnes_(earth-616)#
+## 108 http://marvel.wikia.com/jessica_drew_(earth-616)#
+## 109 http://marvel.wikia.com/jessica_jones_(earth-616)#
+## 110 http://marvel.wikia.com/amadeus_cho_(earth-616)#
+## 111 http://marvel.wikia.com/maria_hill_(earth-616)#
+## 112 http://marvel.wikia.com/robert_baldwin_(earth-616)#
+## 113 http://marvel.wikia.com/sharon_carter_(earth-616)#
+## 114 http://marvel.wikia.com/eric_o%27grady_(earth-616)#
+## 115 http://marvel.wikia.com/brunnhilde_(earth-616)#
+## 116 http://marvel.wikia.com/richard_rider_(earth-616)#
+## 117 http://marvel.wikia.com/brian_braddock_(earth-616)#
+## 118 http://marvel.wikia.com/dennis_sykes_(earth-616)#
+## 119 http://marvel.wikia.com/noh-varr_(earth-616)#
+## 120 http://marvel.wikia.com/thaddeus_ross_(earth-616)#
+## 121 http://marvel.wikia.com/john_aman_(earth-616)#
+## 122 http://marvel.wikia.com/shang-chi_(earth-616)#
+## 123 http://marvel.wikia.com/james_santini_(earth-616)#
+## 124 http://marvel.wikia.com/emery_schaub_(earth-616)#
+## 125 http://marvel.wikia.com/jeanne_foucault_(earth-616)#
+## 126 http://marvel.wikia.com/fiona_(inhuman)_(earth-616)#
+## 127 http://marvel.wikia.com/jennifer_takeda_(earth-616)#
+## 128 http://marvel.wikia.com/hollow_(earth-616)#
+## 129 http://marvel.wikia.com/julie_power_(earth-616)#
+## 130 http://marvel.wikia.com/alani_ryan_(earth-616)#
+## 131 http://marvel.wikia.com/ken_mack_(earth-616)#
+## 132 http://marvel.wikia.com/humberto_lopez_(earth-616)#
+## 133 http://marvel.wikia.com/johnathon_gallo_(earth-616)#
+## 134 http://marvel.wikia.com/lyra_(earth-8009)#
+## 135 http://marvel.wikia.com/anya_corazon_(earth-616)#
+## 136 http://marvel.wikia.com/brandon_sharpe_(earth-616)#
+## 137 http://marvel.wikia.com/kevin_masterson_(earth-616)#
+## 138 http://marvel.wikia.com/michiko_musashi_(earth-616)#
+## 139 http://marvel.wikia.com/takashi_matsuya_(earth-616)#
+## 140 http://marvel.wikia.com/daisy_johnson_(earth-616)#
+## 141 http://marvel.wikia.com/ororo_munroe_(earth-616)#
+## 142 http://marvel.wikia.com/matthew_murdock_(earth-616)#
+## 143 http://marvel.wikia.com/eugene_thompson_(earth-616)#
+## 144 http://marvel.wikia.com/otto_octavius_(earth-616)#
+## 145
+http://marvel.wikia.com/alexander_summers_(earth-616)#
+## 146 http://marvel.wikia.com/samuel_guthrie_(earth-616)#
+## 147
+http://marvel.wikia.com/roberto_da_costa_(earth-616)#
+## 148 http://marvel.wikia.com/eden_fesi_(earth-616)#
+## 149
+http://marvel.wikia.com/captain_universe_(earth-616)#
+## 150 http://marvel.wikia.com/isabel_kane_(earth-616)#
+## 151 http://marvel.wikia.com/marcus_milton_(earth-13034)#
+## 152
+http://marvel.wikia.com/rogue_(anna_marie)_(earth-616)#
+## 153 http://marvel.wikia.com/shiro_yoshida_(earth-616)#
+## 154 http://marvel.wikia.com/ex_nihilo_(earth-616)#
+## 155
+http://marvel.wikia.com/abyss_(ex_nihilo%27s)_(earth-616)#
+## 156 http://marvel.wikia.com/nightmask_(earth-616)#
+## 157 http://marvel.wikia.com/kevin_connor_(earth-616)#
+## 158 http://marvel.wikia.com/sam_alexander_(earth-616)#
+## 159 http://marvel.wikia.com/america_chavez_(earth-616)#
+## 160
+http://marvel.wikia.com/loki_laufeyson_(ikol)_(earth-616)#
+## 161 http://marvel.wikia.com/david_alleyne_(earth-616)#
+## 162
+http://marvel.wikia.com/nicholas_fury,_jr._(earth-616)#
+## 163 http://marvel.wikia.com/phillip_coulson_(earth-616)#
+## 164 http://marvel.wikia.com/tony_masters_(earth-616)#
+## 165 http://marvel.wikia.com/victor_mancha_(earth-616)#
+## 166 http://marvel.wikia.com/monica_chang_(earth-616)#
+## 167
+http://marvel.wikia.com/doombot_(avenger)_(earth-616)#
+## 168 http://marvel.wikia.com/alexis_(earth-616)#
+## 169 http://marvel.wikia.com/eric_brooks_(earth-616)#
+## 170 http://marvel.wikia.com/adam_brashear_(earth-616)#
+## 171 http://marvel.wikia.com/victor_alvarez_(earth-616)#
+## 172 http://marvel.wikia.com/ava_ayala_(earth-616)#
+## 173 http://marvel.wikia.com/kaluu_(earth-616)#
+## name.alias appearances current. gender
+probationary.introl
+## 1 henry jonathan &quot;hank&quot; pym 1269 yes male
+## 2 janet van dyne 1165 yes female
+## 3 anthony edward &quot;tony&quot; stark 3068 yes male
+## 4 robert bruce banner 2089 yes male
+## 5 thor odinson 2402 yes male
+## 6 richard milhouse jones 612 yes male
+## 7 steven rogers 3458 yes male
+## 8 clinton francis barton 1456 yes male
+## 9 pietro maximoff 769 yes male
+## 10 wanda maximoff 1214 yes female
+## 11 jacques duquesne 115 no male
+## 12 heracles 741 yes male
+## 13 t&#39;challa 780 no male
+## 14 victor shade (alias) 1036 yes male
+## 15 dane whitman 482 no male
+## 16 natalia alianovna romanova 1112 yes female
+## 17 brandt 160 no female
+## 18 henry p. mccoy 1886 no male jul-75
+## 19 heather douglas 332 no female jul-75
+## 20 patsy walker 557 no female nov-75
+## 21 matthew liebowitz (birth name) 197 no male
+## 22 robert l. frank sr.  106 no male apr-77
+## 23 simon williams 692 yes male apr-77
+## 24 yondu udonta 109 no male
+## 25 martinex t&#39;naga 100 no male
+## 26 charlie-27 132 no male
+## 27 nicholette gold 108 no female
+## 28 stakar 100 no male
+## 29 vance astrovik 156 no male
+## 30 mar-vell 254 no male
+## 31 carol susan jane danvers 935 yes female
+## 32 samuel thomas wilson 576 yes male
+## 33 jocasta 141 yes female jul-80
+## 34 greer grant nelson 355 yes female
+## 35 jennifer walters 933 yes female
+## 36 monica rambeau 348 yes female jan-83
+## 37 eros 206 no male jun-83
+## 38 james r. rhodes 533 no male may-84
+## 39 barbara barton (nee morse) 374 no female jun-84
+## 40 moira brandon 2 no female
+## 41 benjamin jacob grimm 2305 no male
+## 42 bonita juarez 83 no female
+## 43 marc spector 402 no male sep-87
+## 44 john f. walker 352 no male
+## 45 jim hammond (alias) 565 no male
+## 46 miguel santos 112 no male
+## 47 julia carpenter 218 no female
+## 48 x-51 149 no male
+## 49 christopher powell 168 no male
+## 50 namor mckenzie 1561 no male
+## 51 scott edward harris lang 217 no male jan-87
+## 52 anthony ludgate druid 158 no male
+## 53 marrina smallwood 86 no female
+## 54 ravonna lexus renslayer 41 no female
+## 55 rita demara 68 no female
+## 56 dennis dunphy 70 no male
+## 57 61 no male
+## 58 reed richards 2125 yes male
+## 59 susan richards (nee storm) 1761 no male
+## 60 wendell elvis vaughn 293 no male
+## 61 ashley crawford 36 yes female
+## 62 22 no female
+## 63 demarr davis 31 yes male
+## 64 val ventura 34 yes male
+## 65 craig hollis 33 yes male
+## 66 gene lorrene 4 no male
+## 67 dorreen green 47 no female
+## 68 7 no male
+## 69 doug taggert 3 no male
+## 70 16 no female
+## 71 wade wilson 575 no male
+## 72 greg willis 58 no male
+## 73 circe 237 no female
+## 74 peter benjamin parker 4333 yes male
+## 75 walter newell 126 no male
+## 76 elvin haliday 158 no male feb-91
+## 77 william baker 355 no male feb-91
+## 78 crystal amaquelin maximoff 517 no female aug-91
+## 79 eric kevin masterson 202 no male
+## 80 phillip javert 31 no male
+## 81 28 no female
+## 82 50 no female
+## 83 anthony edward stark 27 no male
+## 84 &quot;giulietta nefaria&quot; 18 no female
+## 85 vance astrovik 302 no male
+## 86 angelica jones 330 no female
+## 87 delroy garrett jr.  101 no male
+## 88 maria de guadalupe santiago 43 no female
+## 89 jonathan hart 126 no male
+## 90 kelsey leigh shorr 24 no female
+## 91 carl lucas 886 yes male
+## 92 veranke 159 no female
+## 93 james &quot;logan&quot; howlett 3130 yes male
+## 94 robert reynolds 241 no male
+## 95 maya lopez 67 no female
+## 96 nathaniel richards 23 no male
+## 97 elijah bradley 103 no male
+## 98 william &quot;billy&quot; kaplan 123 yes male
+## 99 dorrek viii/theodore &quot;teddy&quot; altman 110 yes male
+## 100 cassie lang 160 no female
+## 101 katherine &quot;kate&quot; bishop 132 yes female
+## 102 alias: jonas 121 no male
+## 103 thomas &quot;tommy&quot; shepherd 59 yes male
+## 104 daniel thomas rand k&#39;ai 629 no male
+## 105 doctor stephen vincent strange 1324 no male
+## 106 ares 236 no male
+## 107 james buchanan barnes 663 no male
+## 108 jessica miriam drew 525 yes female
+## 109 jessica jones 205 yes female
+## 110 amadeus cho 108 no male
+## 111 maria hill 359 yes female
+## 112 robbie baldwin 299 no male
+## 113 sharon carter 333 no female
+## 114 eric o&#39;grady 88 no male
+## 115 brunnhilde 369 no female
+## 116 richard rider 380 no male
+## 117 brian braddock 545 no male
+## 118 dennis sykes 6 no male
+## 119 noh-varr 126 yes male
+## 120 thaddeus ross 417 no male
+## 121 john aman 31 yes male
+## 122 shang-chi 310 yes male
+## 123 james santini 40 yes male
+## 124 emery schaub 26 yes male
+## 125 jeanne foucault 63 yes female
+## 126 fiona 2 yes female
+## 127 jennifer takeda 73 yes female
+## 128 yvette 22 yes female
+## 129 julie power 153 yes female
+## 130 alani ryan 73 yes female
+## 131 ken mack 59 no male
+## 132 humberto lopez 66 yes male
+## 133 johnny gallo 43 yes male
+## 134 lyra 55 yes female
+## 135 anya corazon 108 yes female
+## 136 brandon sharpe 64 yes male
+## 137 kevin masterson 62 yes male
+## 138 michiko musashi 94 yes female
+## 139 taki matsuya 18 yes male
+## 140 daisy johnson 81 no female
+## 141 ororo munroe 1598 no female
+## 142 matt murdock 1375 no male
+## 143 flash thompson 746 yes male
+## 144 otto octavius 561 no male
+## 145 alex summers 592 yes male
+## 146 samuel guthrie 679 yes male
+## 147 roberto da costa 491 yes male
+## 148 eden fesi 65 yes male
+## 149 55 yes male
+## 150 izzy kane 44 yes female
+## 151 marcus milton 65 yes male
+## 152 anna marie 877 yes female
+## 153 shiro yoshida 176 yes male
+## 154 24 yes male
+## 155 25 yes female
+## 156 adam 35 yes male
+## 157 kevin kale connor 44 yes male
+## 158 sam alexander 78 yes male
+## 159 america chavez 22 yes female
+## 160 loki laufeyson 77 no male
+## 161 david alleyne 115 yes male
+## 162 nicholas fury, jr., marcus johnson 77 yes male
+## 163 phillip coulson 69 yes male
+## 164 tony masters 173 no male
+## 165 victor mancha 75 yes male
+## 166 monica chang 12 yes female
+## 167 14 yes male
+## 168 alexis 13 yes female
+## 169 eric brooks 198 yes male
+## 170 adam brashear 29 yes male
+## 171 victor alvarez 45 yes male
+## 172 ava ayala 49 yes female
+## 173 kaluu 35 yes male
+## full.reserve.avengers.intro year years.since.joining
+honorary death1 return1 death2 return2
+## 1 sep-63 1963 52 full yes no
+## 2 sep-63 1963 52 full yes yes
+## 3 sep-63 1963 52 full yes yes
+## 4 sep-63 1963 52 full yes yes
+## 5 sep-63 1963 52 full yes yes yes no
+## 6 sep-63 1963 52 honorary no
+## 7 mar-64 1964 51 full yes yes
+## 8 may-65 1965 50 full yes yes yes yes
+## 9 may-65 1965 50 full yes yes
+## 10 may-65 1965 50 full yes yes
+## 11 sep-65 1965 50 full yes yes
+## 12 oct-67 1967 48 full no
+## 13 may-68 1968 47 full no
+## 14 nov-68 1968 47 full yes yes
+## 15 dec-69 1969 46 full no
+## 16 may-73 1973 42 full yes yes
+## 17 aug-73 1973 42 full yes yes
+## 18 sep-76 1976 39 full no
+## 19 sep-76 1976 39 full yes yes yes yes
+## 20 sep-76 1976 39 full yes yes
+## 21 aug-75 1975 40 full yes yes yes no
+## 22 jul-78 1978 37 full yes no
+## 23 mar-79 1979 36 full yes yes
+## 24 feb-78 1978 37 honorary no
+## 25 feb-78 1978 37 honorary no
+## 26 feb-78 1978 37 honorary no
+## 27 feb-78 1978 37 honorary no
+## 28 feb-78 1978 37 honorary no
+## 29 feb-78 1978 37 honorary no
+## 30 jul-78 1978 37 full yes yes yes yes
+## 31 apr-79 1979 36 full no
+## 32 jun-79 1979 36 full no
+## 33 nov-88 1988 27 full yes yes yes yes
+## 34 sep-81 1981 34 full no
+## 35 jul-82 1982 33 full yes yes
+## 36 may-83 1983 32 full no
+## 37 may-84 1984 31 full no
+## 38 sep-84 1984 31 full no
+## 39 sep-84 1984 31 full yes yes
+## 40 nov-93 1993 22 honorary yes no
+## 41 jun-86 1986 29 full yes yes
+## 42 sep-87 1987 28 full no
+## 43 jun-88 1988 27 full no
+## 44 may-89 1989 26 full no
+## 45 nov-89 1989 26 full yes yes
+## 46 apr-91 1991 24 full no
+## 47 sep-92 1992 23 full no
+## 48 jun-92 1992 23 full yes yes
+## 49 may-93 1993 22 full no
+## 50 dec-85 1985 30 full yes yes
+## 51 3-feb 2003 12 full yes yes
+## 52 apr-87 1987 28 honorary yes yes yes yes
+## 53 dec-87 1987 28 full yes yes yes yes
+## 54 may-88 1988 27 full yes yes yes no
+## 55 nov-88 1988 27 honorary yes yes
+## 56 jan-88 1988 27 full yes yes yes no
+## 57 feb-89 1989 26 full yes yes
+## 58 feb-89 1989 26 full no
+## 59 feb-89 1989 26 full no
+## 60 oct-89 1989 26 full yes yes
+## 61 jul-89 1989 26 full no
+## 62 jul-89 1989 26 full yes no
+## 63 jul-89 1989 26 full yes yes
+## 64 jul-89 1989 26 full no
+## 65 jul-89 1989 26 full no
+## 66 5-apr 2005 10 full no
+## 67 5-may 2005 10 full no
+## 68 5-may 2005 10 full yes no
+## 69 5-may 2005 10 full yes no
+## 70 5-jul 2005 10 full no
+## 71 7-sep 2007 8 full yes no
+## 72 9-aug 2009 6 full no
+## 73 feb-90 1990 25 full no
+## 74 apr-90 1990 25 full yes yes yes yes
+## 75 jul-90 1990 25 full no
+## 76 1900 115 probationary no
+## 77 1900 115 probationary yes yes no
+## 78 jan-92 1992 23 full no
+## 79 jan-92 1992 23 full yes yes yes no
+## 80 dec-92 1992 23 honorary no
+## 81 jun-93 1993 22 honorary no
+## 82 jul-93 1993 22 honorary yes yes yes no
+## 83 feb-96 1996 19 full yes no
+## 84 apr-96 1996 19 honorary yes no
+## 85 may-98 1998 17 full no
+## 86 may-98 1998 17 full no
+## 87 apr-00 2000 15 full no
+## 88 jul-00 2000 15 full no
+## 89 1-aug 2001 14 full yes yes yes yes
+## 90 4-jun 2004 11 full no
+## 91 5-mar 2005 10 full no
+## 92 5-mar 2005 10 full yes no
+## 93 5-jun 2005 10 full yes no
+## 94 5-oct 2005 10 full yes yes
+## 95 5-nov 2005 10 full yes yes yes no
+## 96 5-apr 2005 10 full no
+## 97 5-apr 2005 10 full no
+## 98 5-apr 2005 10 full no
+## 99 5-apr 2005 10 full no
+## 100 5-jun 2005 10 full yes yes
+## 101 5-jun 2005 10 full no
+## 102 6-feb 2006 9 full yes no
+## 103 6-jun 2006 9 full no
+## 104 7-feb 2007 8 full no
+## 105 7-feb 2007 8 full no
+## 106 7-mar 2007 8 full yes yes yes no
+## 107 8-dec 2008 7 full no
+## 108 8-dec 2008 7 full no
+## 109 10-aug 2010 5 full no
+## 110 9-dec 2009 6 full no
+## 111 10-may 2010 5 full no
+## 112 10-jun 2010 5 full no
+## 113 10-may 2010 5 full yes yes
+## 114 10-may 2010 5 full yes no
+## 115 10-may 2010 5 full no
+## 116 10-may 2010 5 full yes no
+## 117 10-may 2010 5 full no
+## 118 10-sep 2010 5 full yes no
+## 119 10-jun 2010 5 full no
+## 120 11-jun 2011 4 full yes yes
+## 121 10-dec 2010 5 full no
+## 122 11-apr 2011 4 full no
+## 123 1900 115 academy no
+## 124 1900 115 academy no
+## 125 10-aug 2010 5 academy no
+## 126 1900 115 academy no
+## 127 10-aug 2010 5 academy no
+## 128 1900 115 academy no
+## 129 1900 115 academy no
+## 130 1900 115 academy no
+## 131 10-aug 2010 5 academy yes no
+## 132 10-aug 2010 5 academy yes no
+## 133 1900 115 academy no
+## 134 1900 115 academy no
+## 135 1900 115 academy no
+## 136 10-aug 2010 5 academy no
+## 137 1900 115 academy no
+## 138 1900 115 academy no
+## 139 1900 115 academy no
+## 140 12-jan 2012 3 full no
+## 141 12-jan 2012 3 full no
+## 142 11-nov 2011 4 full no
+## 143 12-apr 2012 3 honorary no
+## 144 13-jan 2013 2 full yes no
+## 145 12-dec 2012 3 full no
+## 146 13-feb 2013 2 full no
+## 147 13-feb 2013 2 full no
+## 148 13-feb 2013 2 full no
+## 149 13-feb 2013 2 full no
+## 150 13-feb 2013 2 full no
+## 151 13-feb 2013 2 full yes no
+## 152 13-apr 2013 2 full no
+## 153 13-may 2013 2 full yes yes
+## 154 13-oct 2013 2 full yes no
+## 155 13-oct 2013 2 full yes no
+## 156 13-oct 2013 2 full yes no
+## 157 13-oct 2013 2 full yes no
+## 158 15-feb 2015 0 honorary no
+## 159 13-jul 2013 2 full no
+## 160 13-jul 2013 2 full no
+## 161 13-sep 2013 2 full no
+## 162 13-apr 2013 2 full no
+## 163 13-apr 2013 2 full no
+## 164 13-may 2013 2 full no
+## 165 13-sep 2013 2 full yes yes
+## 166 13-sep 2013 2 full no
+## 167 13-sep 2013 2 full no
+## 168 13-nov 2013 2 full no
+## 169 13-nov 2013 2 full no
+## 170 14-jan 2014 1 full no
+## 171 14-jan 2014 1 full no
+## 172 14-jan 2014 1 full no
+## 173 15-jan 2015 0 full no
+## death3 return3 death4 return4 death5 return5
+## 1
+## 2
+## 3
+## 4
+## 5
+## 6
+## 7
+## 8
+## 9
+## 10
+## 11
+## 12
+## 13
+## 14
+## 15
+## 16
+## 17
+## 18
+## 19
+## 20
+## 21
+## 22
+## 23
+## 24
+## 25
+## 26
+## 27
+## 28
+## 29
+## 30 yes no
+## 31
+## 32
+## 33 yes yes yes yes yes yes
+## 34
+## 35
+## 36
+## 37
+## 38
+## 39
+## 40
+## 41
+## 42
+## 43
+## 44
+## 45
+## 46
+## 47
+## 48
+## 49
+## 50
+## 51
+## 52
+## 53
+## 54
+## 55
+## 56
+## 57
+## 58
+## 59
+## 60
+## 61
+## 62
+## 63
+## 64
+## 65
+## 66
+## 67
+## 68
+## 69
+## 70
+## 71
+## 72
+## 73
+## 74
+## 75
+## 76
+## 77
+## 78
+## 79
+## 80
+## 81
+## 82
+## 83
+## 84
+## 85
+## 86
+## 87
+## 88
+## 89
+## 90
+## 91
+## 92
+## 93
+## 94
+## 95
+## 96
+## 97
+## 98
+## 99
+## 100
+## 101
+## 102
+## 103
+## 104
+## 105
+## 106
+## 107
+## 108
+## 109
+## 110
+## 111
+## 112
+## 113
+## 114
+## 115
+## 116
+## 117
+## 118
+## 119
+## 120
+## 121
+## 122
+## 123
+## 124
+## 125
+## 126
+## 127
+## 128
+## 129
+## 130
+## 131
+## 132
+## 133
+## 134
+## 135
+## 136
+## 137
+## 138
+## 139
+## 140
+## 141
+## 142
+## 143
+## 144
+## 145
+## 146
+## 147
+## 148
+## 149
+## 150
+## 151
+## 152
+## 153
+## 154
+## 155
+## 156
+## 157
+## 158
+## 159
+## 160
+## 161
+## 162
+## 163
+## 164
+## 165
+## 166
+## 167
+## 168
+## 169
+## 170
+## 171
+## 172
+## 173
+## notes
+## 1 merged with ultron in rage of ultron vol. 1. a funeral
+was held.
+## 2 dies in secret invasion v1:i8. actually was sent tto
+microverse later recovered
+## 3 death: &quot;later while under the influence of immortus
+stark committed a number of horrible acts and was killed.&#39;
+this set up young tony. franklin richards later brought him
+back
+## 4 dies in ghosts of the future arc. however &quot;he had
+actually used a hidden pantheon base to survive&quot;
+## 5 dies in fear itself brought back because that&#39;s kind
+of the whole point. second death in time runs out has not
+yet returned
+## 6 na
+## 7 dies at the end of civil war. later comes back.
+## 8 dies in exploding kree ship in averngers vol. 1 issue
+502. brought back by scarlet witch. dies again in house of
+m vol 1 issue 7. is later brought back.
+## 9 dies in house of m vol 1 issue 7. later comes back
+## 10 dies in uncanny_avengers_vol_1_14. later comes back
+## 11 dies in avengers_vol_1_130. brought back by the chaos
+king
+## 12 na
+## 13 na
+## 14 dies in avengers_vol_1_500. is eventually rebuilt.
+## 15 na
+## 16 killed by the hand. later revived with the stone of
+the chaste.
+## 17 dies in silver_surfer_vol_3_3. actually &quot;fragments of
+her essence were spread out all across the universe&quot;
+## 18 na
+## 19 dies in defenders_vol_1_152. later &#39;obtained a new
+body.&#39; dies in annihilation:_conquest_vol_1_3. comes back
+as &quot;as before&quot; also was once named madame macevil because
+lol.
+## 20 died during time on defenders. eventually ressurected
+by villian grim reaper along with mockingbird to fight the
+avengers.
+## 21 died during return_to_the_old_west. resurrected by
+she hulk in negotiation with time variance authority. as a
+time traveller he died in 1938. did not return
+## 22 died in vision_and_the_scarlet_witch_vol_1_2. did not
+return however he was eventually cloned but the clone was
+killed immediately.
+## 23 died in avengers_vol_1_9. actually just in a
+death-like coma.
+## 24 na
+## 25 na
+## 26 na
+## 27 na
+## 28 na
+## 29 na
+## 30 the bad penny of the marvel universe. first killed in
+secret invasion. revived during the chaos war. died again
+during aformentioned chaos war. resurrected by the kree
+empire using them&#39;kraan crystal. third death during
+avengers vs. x-men. has not return
+## 31 na
+## 32 na
+## 33 from her article: death1: &quot;defeated ultron and
+reversed the process leaving jocasta a mindless husk.&quot;
+return 1: &quot;ultron later revived jocasta with a remote link
+activating the mental residue the wasp left behind&quot; death
+2: &quot;sacrificing herself to try to ki
+## 34 na
+## 35 dies during red hulk saga. returns when lyra
+infiltrates intelligenica and finds her in statis
+## 36 na
+## 37 na
+## 38 na
+## 39 killed by mephisto. after secret invasion it turns
+out she was actually being impersonated by a skrull the
+whole time and was alive and well.
+## 40 died in her second appearance earns honorary avengers
+status doing so. stays dead.
+## 41 once killed during a battle with doctor doom.&#39;
+brought back by the ff when they literally went to heaven
+to get him.
+## 42 na
+## 43 na but he he did die and return to get his powers
+prior to joining the avengers.
+## 44 na
+## 45 dies during new invaders. was &quot;was revived as a
+living weapon the thinker intended to sell.&quot; prior to
+joining the avengers he had died like 2 times in the 40s.
+## 46 na: has not died since joing the avengers but prior
+to joining he fought the west coast avengers and seemingly
+died. later turned up under control of a villain
+## 47 na
+## 48 died in deathlok vol 2 #5. jk that was actually just
+a life model decoy
+## 49 na
+## 50 namor was presumed killed in the battle with
+atlantean barbarians. had actually survived and turned up
+in the south pacific
+## 51 died in avengers:_disassembled. was brought back in
+the young avengers: children&#39;s crusade arc because time
+travel but take my word for it it was actually kind of well
+done.
+## 52 shot with a breathing gun and corpse dumped in trash.
+revived by the grim reaper. helped avengers defeat the
+reaper so his spirit could remain at peace. later
+completely revived by the chaos king.
+## 53 killed by namor with the ebony blade. returned when
+the master put her in a statis tube. death 2 was when namor
+mercy killed her. returned to life a second time by the
+chaos king.
+## 54 killed in avengers_vol_1_24. revived by the
+grandmaster. died in avengers:_forever_vol_1_3.
+## 55 killed by iron man when he was controlled by
+immortus. revived during chaos war.
+## 56 died in captain_america_348. actually &quot;dunphy
+miraculously survived the crash and lived with an inuit
+tribe.&quot; second death when killed by sharon carter.
+## 57 killed by neut who was working for immortus. reborn
+into a new body.
+## 58 na
+## 59 na
+## 60 killed by the cosmic assassin. actually turned into a
+being composed of pure energy.
+## 61 na
+## 62 died in great_lakes_avengers_vol_1_1. has not
+returned
+## 63 sacrificed self so that mr. immortal could stop the
+villain maelstrom. returned as the angel of death.
+## 64 na
+## 65 christ; where to begin. his superpower is that he
+cannot die when he dies he immediately comes back. the
+wikia inventories 24 deaths. these will be excluded from
+the analysis.
+## 66 na
+## 67 na
+## 68 killed by leather boy
+## 69 accidently killed by zaran
+## 70 na
+## 71 died during incursion. it&#39;s not ever particulalry
+clear if he ever joined an avengers team besides one issue
+so his inclusion here is specious at best.
+## 72 died on battleworld and came back prior to joining
+avengers
+## 73 na
+## 74 since joining the new avengers: first death killed by
+morlun. ressurected in a brand new body. died in amazing
+spider-man #700. eventually mainfested in his body that
+octavious stole and then took over again.
+## 75 na
+## 76 na
+## 77 died in identity_disc_vol_1_1. later was revealed to
+be alive and working along with the vulture.
+## 78 na
+## 79 became posessed died to purge self of corruption.
+revived as undead avenger minion of the grim reaper.
+returned to the spirit world by the scarlet witch. has
+since stayed dead.
+## 80 na
+## 81 na
+## 82 reduced her to a pile of bones and organsby vargas.
+brought back by chaos king. died second time in
+chaos_war:_dead_avengers_vol_1_3
+## 83 merged with 616 tony stark
+## 84 whitney killed was a clone possibly this incarnation
+of masque&#39;
+## 85 na
+## 86 na
+## 87 na
+## 88 na
+## 89 first died in a zero energy explosion in space. body
+was apparently reanimated by scarlet witch. abruptly
+exploded killing scott lang as well. second return in
+marvel_zombies_supreme_vol_1_2.
+## 90 na
+## 91 na
+## 92 killed by norman osbourne. has not returned.
+## 93 died in death_of_wolverine_vol_1_4. has not yet
+returned
+## 94 died during seige. brought back to life by the
+apocalypse twins as a horseman of death in
+uncanny_avengers_vol_1_9.
+## 95 first death &#39;had been murdered in a fight with
+elektra.&#39; &quot;revived by elektra and the hand with their dark
+magic.&quot; died in most recent run of moon knight has not yet
+returned.
+## 96 na is actually kang but let&#39;s just not go there.
+## 97 na
+## 98 na
+## 99 na
+## 100 dies in young avengers: the childrens crusade when
+she is killed by doom. eventually reborn years later.
+## 101 na
+## 102 dies in young avengers the children&#39;s crusade
+## 103 na
+## 104 na
+## 105 na
+## 106 ripped in half by the sentry during seige. revived
+during chaos king. then killedby chaos king.
+## 107 na
+## 108 na
+## 109 na
+## 110 na
+## 111 na
+## 112 na
+## 113 died in captain_america_vol_7_10. it&#39;s not clear how
+she survived but yeah she totally did.
+## 114 died in secret_avengers_vol_1_22.
+## 115 na but died/came back during ragnarok prior to
+becoming an avenger
+## 116 died in guardians_of_the_galaxy_vol_3_20.
+## 117 na
+## 118 died in heroic_age:_one_month_to_live_vol_1_5 stayed
+dead.
+## 119 na
+## 120 died in circle of four arc. made a deal with
+mephisto and came back.
+## 121 na
+## 122 na
+## 123 na
+## 124 na
+## 125 na
+## 126 na
+## 127 na
+## 128 na
+## 129 na
+## 130 na
+## 131 died in murderworld during avengers arena
+## 132 died in murderworld during avengers arena
+## 133 na
+## 134 na
+## 135 na
+## 136 na
+## 137 na
+## 138 na
+## 139 na
+## 140 na
+## 141 na
+## 142 na
+## 143 na
+## 144 died in superior_spider-man_vol_1_30.
+## 145 na
+## 146 na
+## 147 na
+## 148 na
+## 149 na
+## 150 na
+## 151 died in new_avengers_vol_3_32.
+## 152 na
+## 153 died in uncanny_avengers_vol_1_22. returned when &#39;he
+was able to use his power to transform his body into a
+state of pure energy &#39;
+## 154 died in new_avengers_vol_3_32
+## 155 died in new_avengers_vol_3_32
+## 156 died in new_avengers_vol_3_32
+## 157 died in new_avengers_vol_3_32
+## 158 na
+## 159 na
+## 160 na
+## 161 na
+## 162 na
+## 163 na
+## 164 na
+## 165 died in avengers_a.i._vol_1_4. returned in
+avengers_a.i._vol_1_9.
+## 166 na
+## 167 na
+## 168 na
+## 169 na
+## 170 na
+## 171 na
+## 172 na
+## 173 na</code></pre>
+<pre class="r"><code>newavg &lt;- na.omit(avengers_csv)
+grls &lt;- lm(appearances~`years.since.joining`, data = newavg)
+coef(grl)</code></pre>
+<pre><code>##  (Intercept)  appearances 
+## 25.306652558  0.003014744</code></pre>
+<pre class="r"><code>#resampling
+boot_dat&lt;- sample_frac(newavg, replace=T)
+samp_distn&lt;-replicate(5000, {
+boot_dat &lt;- sample_frac(newavg, replace=T) #take bootstrap sample of rows
+fit &lt;- lm(appearances~years.since.joining+gender, data=avengers_csv) #fit model on bootstrap sample
+coef(fit) #save coefs
+})
+## Estimated SEs
+samp_distn %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
+<pre><code>##   (Intercept) years.since.joining gendermale
+## 1           0                   0          0</code></pre>
+<p>##Question 5</p>
+<pre class="r"><code>#Logistic Regression Model and Binary Variable
+ngrl&lt;-avengers_csv%&gt;%mutate(y=ifelse(current.==&quot;yes&quot;,1,0))
+head(ngrl)</code></pre>
+<pre><code>## url name.alias appearances
+## 1 http://marvel.wikia.com/henry_pym_(earth-616) henry
+jonathan &quot;hank&quot; pym 1269
+## 2 http://marvel.wikia.com/janet_van_dyne_(earth-616)
+janet van dyne 1165
+## 3 http://marvel.wikia.com/anthony_stark_(earth-616)
+anthony edward &quot;tony&quot; stark 3068
+## 4
+http://marvel.wikia.com/robert_bruce_banner_(earth-616)
+robert bruce banner 2089
+## 5 http://marvel.wikia.com/thor_odinson_(earth-616) thor
+odinson 2402
+## 6 http://marvel.wikia.com/richard_jones_(earth-616)
+richard milhouse jones 612
+## current. gender probationary.introl
+full.reserve.avengers.intro year years.since.joining
+honorary
+## 1 yes male sep-63 1963 52 full
+## 2 yes female sep-63 1963 52 full
+## 3 yes male sep-63 1963 52 full
+## 4 yes male sep-63 1963 52 full
+## 5 yes male sep-63 1963 52 full
+## 6 yes male sep-63 1963 52 honorary
+## death1 return1 death2 return2 death3 return3 death4
+return4 death5 return5
+## 1 yes no
+## 2 yes yes
+## 3 yes yes
+## 4 yes yes
+## 5 yes yes yes no
+## 6 no
+## notes
+## 1 merged with ultron in rage of ultron vol. 1. a funeral
+was held.
+## 2 dies in secret invasion v1:i8. actually was sent tto
+microverse later recovered
+## 3 death: &quot;later while under the influence of immortus
+stark committed a number of horrible acts and was killed.&#39;
+this set up young tony. franklin richards later brought him
+back
+## 4 dies in ghosts of the future arc. however &quot;he had
+actually used a hidden pantheon base to survive&quot;
+## 5 dies in fear itself brought back because that&#39;s kind
+of the whole point. second death in time runs out has not
+yet returned
+## 6 na
+## y
+## 1 1
+## 2 1
+## 3 1
+## 4 1
+## 5 1
+## 6 1</code></pre>
+<pre class="r"><code>ggrl&lt;-glm(y~gender,data=ngrl, family=binomial)
+summary(ggrl)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ gender, family = binomial, data = ngrl)
+## 
+## Deviance Residuals: 
+##    Min      1Q  Median      3Q     Max  
+## -1.177  -1.112  -1.112   1.245   1.245  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -1.167e-15  2.626e-01   0.000    1.000
+## gendermale  -1.568e-01  3.224e-01  -0.486    0.627
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 239.36  on 172  degrees of freedom
+## Residual deviance: 239.12  on 171  degrees of freedom
+## AIC: 243.12
+## 
+## Number of Fisher Scoring iterations: 3</code></pre>
+<pre class="r"><code>#Confusion Matrix
+table(truth=avengers_csv$current., prediction=avengers_csv$gender)%&gt;%addmargins</code></pre>
+<pre><code>##      prediction
+## truth female male Sum
+##   no      29   62  91
+##   yes     29   53  82
+##   Sum     58  115 173</code></pre>
+<pre class="r"><code>#accuracy, Sensitivity, etc.
+(29+53)/173 #accuracy</code></pre>
+<pre><code>## [1] 0.4739884</code></pre>
+<pre class="r"><code>29/91 #</code></pre>
+<pre><code>## [1] 0.3186813</code></pre>
+<pre class="r"><code>sensitivity &lt;- 53/82 #sensitivity 
+29/58 #specificity</code></pre>
+<pre><code>## [1] 0.5</code></pre>
+<pre class="r"><code>#plotting
+library(plotROC)
+ROCplot&lt;-ggplot(ngrl)+geom_roc(aes(d=y,m=ngrl$appearances), n.cuts=0)
+ROCplot</code></pre>
+<p><img src="/project/project2_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(ROCplot)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.4842536</code></pre>
+<pre class="r"><code>coeftest(ggrl)</code></pre>
+<pre><code>## 
+## z test of coefficients:
+## 
+##                Estimate  Std. Error z value Pr(&gt;|z|)
+## (Intercept) -1.1672e-15  2.6261e-01  0.0000   1.0000
+## gendermale  -1.5684e-01  3.2243e-01 -0.4864   0.6267</code></pre>
+<pre class="r"><code>ggrl</code></pre>
+<pre><code>##
+## Call: glm(formula = y ~ gender, family = binomial, data
+= ngrl)
+##
+## Coefficients:
+## (Intercept) gendermale
+## -1.167e-15 -1.568e-01
+##
+## Degrees of Freedom: 172 Total (i.e. Null); 171 Residual
+## Null Deviance: 239.4
+## Residual Deviance: 239.1 AIC: 243.1</code></pre>
+<pre class="r"><code>coef(ggrl)%&gt;%round(5)%&gt;%data.frame</code></pre>
+<pre><code>##                    .
+## (Intercept)  0.00000
+## gendermale  -0.15684</code></pre>
+<pre class="r"><code>class_diag&lt;-function(probs,truth){
+        
+        tab&lt;-table(factor(probs&gt;.5,levels=c(&quot;FALSE&quot;,&quot;TRUE&quot;)),truth)
+        acc=sum(diag(tab))/sum(tab)
+        sens=tab[2,2]/colSums(tab)[2]
+        spec=tab[1,1]/colSums(tab)[1]
+        ppv=tab[2,2]/rowSums(tab)[2]
+        
+        if(is.numeric(truth)==FALSE &amp; is.logical(truth)==FALSE) truth&lt;-as.numeric(truth)-1
+        
+        #CALCULATE EXACT AUC
+        ord&lt;-order(probs, decreasing=TRUE)
+        probs &lt;- probs[ord]; truth &lt;- truth[ord]
+        
+        TPR=cumsum(truth)/max(1,sum(truth)) 
+        FPR=cumsum(!truth)/max(1,sum(!truth))
+        
+        dup&lt;-c(probs[-1]&gt;=probs[-length(probs)], FALSE)
+        TPR&lt;-c(0,TPR[!dup],1); FPR&lt;-c(0,FPR[!dup],1)
+        
+        n &lt;- length(TPR)
+        auc&lt;- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+        
+        data.frame(acc,sens,spec,ppv,auc)
+      }
+    #  class_diag(predict(fit,type=&#39;response&#39;),avengers_csv$appearances)
+# the auc value is low meaning it is hard to predict if the character is current or not by the number of appearances.</code></pre>
+<p>##Question 6</p>
+<pre class="r"><code>fit &lt;- glm(y~., data=ngrl)
+#making the confusion matrix
+probs&lt;-predict(fit,type=&quot;response&quot;) 
+table(predict=as.numeric(probs&gt;.5),truth=ngrl$y)%&gt;%addmargins</code></pre>
+<pre><code>##        truth
+## predict   0   1 Sum
+##     0    91   0  91
+##     1     0  82  82
+##     Sum  91  82 173</code></pre>
+<pre class="r"><code># Classification Diagnostics
+82/82 </code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>91/91 </code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>82/82 </code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code># repeats
+ranks&lt;-replicate(5000,{
+rand_pos&lt;-sample(ngrl[ngrl$y==1,]$prob)
+rand_neg&lt;-sample(ngrl[ngrl$y==0,]$prob)
+case_when(rand_pos &gt; rand_neg ~ 1, rand_pos == rand_neg ~ .5, rand_pos&lt;rand_neg ~ 0)
+})
+mean(ranks) </code></pre>
+<pre><code>## [1] NA</code></pre>
+<pre class="r"><code>#calc auc/roc
+ROCplot1&lt;- ggplot(ngrl)+geom_roc(aes(d=y,m=ngrl$prob), n.cuts=0)
+ROCplot1</code></pre>
+<p><img src="/project/project2_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(ROCplot1)</code></pre>
+<pre><code>##    PANEL group AUC
+## 1      1     1 0.5
+## 2      1     2 0.5
+## 3      1     3  NA
+## 4      1     4  NA
+## 5      1     5  NA
+## 6      1     6  NA
+## 7      1     7  NA
+## 8      1     8  NA
+## 9      1     9  NA
+## 10     1    10  NA
+## 11     1    11  NA
+## 12     1    12  NA
+## 13     1    13  NA</code></pre>
+<pre class="r"><code>#the auc value is also pretty low here, meaning it is hard to predict the current of the character.
+#LASSO
+newgrl &lt;- ngrl %&gt;% select(-notes,-url,-death4,-return4,-death5,-return5)
+library(glmnet)
+z&lt;-as.matrix(newgrl$current.) #grab response
+x&lt;-model.matrix(current.~.,data=newgrl)[,-1] #grab predictors
+head(x)</code></pre>
+<pre><code>## name.alias&quot;giulietta nefaria&quot; name.aliasadam
+name.aliasadam brashear name.aliasalani ryan
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliasalex summers name.aliasalexis name.aliasalias:
+jonas name.aliasamadeus cho
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliasamerica chavez name.aliasangelica jones
+name.aliasanna marie
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasanthony edward &quot;tony&quot; stark name.aliasanthony
+edward stark
+## 1 0 0
+## 2 0 0
+## 3 1 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## name.aliasanthony ludgate druid name.aliasanya corazon
+name.aliasares name.aliasashley crawford
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliasava ayala name.aliasbarbara barton (nee morse)
+name.aliasbenjamin jacob grimm
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasbonita juarez name.aliasbrandon sharpe
+name.aliasbrandt name.aliasbrian braddock
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliasbrunnhilde name.aliascarl lucas
+name.aliascarol susan jane danvers
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliascassie lang name.aliascharlie-27
+name.aliaschristopher powell name.aliascirce
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliasclinton francis barton name.aliascraig hollis
+name.aliascrystal amaquelin maximoff
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasdaisy johnson name.aliasdane whitman
+name.aliasdaniel thomas rand k&#39;ai
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasdavid alleyne name.aliasdelroy garrett jr.
+name.aliasdemarr davis
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasdennis dunphy name.aliasdennis sykes
+name.aliasdoctor stephen vincent strange
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasdorreen green name.aliasdorrek viii/theodore
+&quot;teddy&quot; altman name.aliasdoug taggert
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliaseden fesi name.aliaselijah bradley
+name.aliaselvin haliday name.aliasemery schaub
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliaseric brooks name.aliaseric kevin masterson
+name.aliaseric o&#39;grady name.aliaseros
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliasfiona name.aliasflash thompson name.aliasgene
+lorrene name.aliasgreer grant nelson
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliasgreg willis name.aliasheather douglas
+name.aliashenry jonathan &quot;hank&quot; pym
+## 1 0 0 1
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliashenry p. mccoy name.aliasheracles
+name.aliashumberto lopez name.aliasizzy kane
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliasjacques duquesne name.aliasjames &quot;logan&quot;
+howlett name.aliasjames buchanan barnes
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasjames r. rhodes name.aliasjames santini
+name.aliasjanet van dyne
+## 1 0 0 0
+## 2 0 0 1
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasjeanne foucault name.aliasjennifer takeda
+name.aliasjennifer walters
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasjessica jones name.aliasjessica miriam drew
+name.aliasjim hammond (alias)
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasjocasta name.aliasjohn aman name.aliasjohn f.
+walker name.aliasjohnny gallo
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliasjonathan hart name.aliasjulia carpenter
+name.aliasjulie power name.aliaskaluu
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliaskatherine &quot;kate&quot; bishop name.aliaskelsey leigh
+shorr name.aliasken mack
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliaskevin kale connor name.aliaskevin masterson
+name.aliasloki laufeyson name.aliaslyra
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliasmar-vell name.aliasmarc spector
+name.aliasmarcus milton
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasmaria de guadalupe santiago name.aliasmaria
+hill name.aliasmarrina smallwood
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasmartinex t&#39;naga name.aliasmatt murdock
+name.aliasmatthew liebowitz (birth name)
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasmaya lopez name.aliasmichiko musashi
+name.aliasmiguel santos name.aliasmoira brandon
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliasmonica chang name.aliasmonica rambeau
+name.aliasnamor mckenzie
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasnatalia alianovna romanova name.aliasnathaniel
+richards
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## name.aliasnicholas fury, jr., marcus johnson
+name.aliasnicholette gold name.aliasnoh-varr
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasororo munroe name.aliasotto octavius
+name.aliaspatsy walker
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliaspeter benjamin parker name.aliasphillip
+coulson name.aliasphillip javert
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliaspietro maximoff name.aliasravonna lexus
+renslayer name.aliasreed richards
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasrichard milhouse jones name.aliasrichard rider
+name.aliasrita demara
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 1 0 0
+## name.aliasrobbie baldwin name.aliasrobert bruce banner
+name.aliasrobert l. frank sr.
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 1 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasrobert reynolds name.aliasroberto da costa
+name.aliassam alexander
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliassamuel guthrie name.aliassamuel thomas wilson
+name.aliasscott edward harris lang
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasshang-chi name.aliassharon carter
+name.aliasshiro yoshida name.aliassimon williams
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliasstakar name.aliassteven rogers name.aliassusan
+richards (nee storm) name.aliast&#39;challa
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliastaki matsuya name.aliasthaddeus ross
+name.aliasthomas &quot;tommy&quot; shepherd
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasthor odinson name.aliastony masters
+name.aliasval ventura name.aliasvance astrovik
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 1 0 0 0
+## 6 0 0 0 0
+## name.aliasveranke name.aliasvictor alvarez
+name.aliasvictor mancha name.aliasvictor shade (alias)
+## 1 0 0 0 0
+## 2 0 0 0 0
+## 3 0 0 0 0
+## 4 0 0 0 0
+## 5 0 0 0 0
+## 6 0 0 0 0
+## name.aliaswade wilson name.aliaswalter newell
+name.aliaswanda maximoff
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliaswendell elvis vaughn name.aliaswilliam &quot;billy&quot;
+kaplan name.aliaswilliam baker
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## name.aliasx-51 name.aliasyondu udonta name.aliasyvette
+appearances gendermale
+## 1 0 0 0 1269 1
+## 2 0 0 0 1165 0
+## 3 0 0 0 3068 1
+## 4 0 0 0 2089 1
+## 5 0 0 0 2402 1
+## 6 0 0 0 612 1
+## probationary.introlapr-77 probationary.introlaug-91
+probationary.introlfeb-91
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## probationary.introljan-83 probationary.introljan-87
+probationary.introljul-75
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## probationary.introljul-80 probationary.introljun-83
+probationary.introljun-84
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## probationary.introlmay-84 probationary.introlnov-75
+probationary.introlsep-87
+## 1 0 0 0
+## 2 0 0 0
+## 3 0 0 0
+## 4 0 0 0
+## 5 0 0 0
+## 6 0 0 0
+## full.reserve.avengers.intro1-aug
+full.reserve.avengers.intro10-aug
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro10-dec
+full.reserve.avengers.intro10-jun
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro10-may
+full.reserve.avengers.intro10-sep
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro11-apr
+full.reserve.avengers.intro11-jun
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro11-nov
+full.reserve.avengers.intro12-apr
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro12-dec
+full.reserve.avengers.intro12-jan
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro13-apr
+full.reserve.avengers.intro13-feb
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro13-jan
+full.reserve.avengers.intro13-jul
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro13-may
+full.reserve.avengers.intro13-nov
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro13-oct
+full.reserve.avengers.intro13-sep
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro14-jan
+full.reserve.avengers.intro15-feb
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro15-jan
+full.reserve.avengers.intro3-feb
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro4-jun
+full.reserve.avengers.intro5-apr
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro5-jul
+full.reserve.avengers.intro5-jun
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro5-mar
+full.reserve.avengers.intro5-may
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro5-nov
+full.reserve.avengers.intro5-oct
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro6-feb
+full.reserve.avengers.intro6-jun
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro7-feb
+full.reserve.avengers.intro7-mar
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro7-sep
+full.reserve.avengers.intro8-dec
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intro9-aug
+full.reserve.avengers.intro9-dec
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introapr-00
+full.reserve.avengers.introapr-79
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introapr-87
+full.reserve.avengers.introapr-90
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introapr-91
+full.reserve.avengers.introapr-96
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introaug-73
+full.reserve.avengers.introaug-75
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introdec-69
+full.reserve.avengers.introdec-85
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introdec-87
+full.reserve.avengers.introdec-92
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introfeb-78
+full.reserve.avengers.introfeb-89
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introfeb-90
+full.reserve.avengers.introfeb-96
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introjan-88
+full.reserve.avengers.introjan-92
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introjul-00
+full.reserve.avengers.introjul-78
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introjul-82
+full.reserve.avengers.introjul-89
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introjul-90
+full.reserve.avengers.introjul-93
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introjun-79
+full.reserve.avengers.introjun-86
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introjun-88
+full.reserve.avengers.introjun-92
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introjun-93
+full.reserve.avengers.intromar-64
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intromar-79
+full.reserve.avengers.intromay-65
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intromay-68
+full.reserve.avengers.intromay-73
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intromay-83
+full.reserve.avengers.intromay-84
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intromay-88
+full.reserve.avengers.intromay-89
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intromay-93
+full.reserve.avengers.intromay-98
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intronov-68
+full.reserve.avengers.intronov-88
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.intronov-89
+full.reserve.avengers.intronov-93
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introoct-67
+full.reserve.avengers.introoct-89
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introsep-63
+full.reserve.avengers.introsep-65
+## 1 1 0
+## 2 1 0
+## 3 1 0
+## 4 1 0
+## 5 1 0
+## 6 1 0
+## full.reserve.avengers.introsep-76
+full.reserve.avengers.introsep-81
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introsep-84
+full.reserve.avengers.introsep-87
+## 1 0 0
+## 2 0 0
+## 3 0 0
+## 4 0 0
+## 5 0 0
+## 6 0 0
+## full.reserve.avengers.introsep-92 year
+years.since.joining honoraryfull honoraryhonorary
+## 1 0 1963 52 1 0
+## 2 0 1963 52 1 0
+## 3 0 1963 52 1 0
+## 4 0 1963 52 1 0
+## 5 0 1963 52 1 0
+## 6 0 1963 52 0 1
+## honoraryprobationary death1yes return1no return1yes
+death2no death2yes return2no return2yes
+## 1 0 1 1 0 0 0 0 0
+## 2 0 1 0 1 0 0 0 0
+## 3 0 1 0 1 0 0 0 0
+## 4 0 1 0 1 0 0 0 0
+## 5 0 1 0 1 0 1 1 0
+## 6 0 0 0 0 0 0 0 0
+## death3yes return3no return3yes y
+## 1 0 0 0 1
+## 2 0 0 0 1
+## 3 0 0 0 1
+## 4 0 0 0 1
+## 5 0 0 0 1
+## 6 0 0 0 1</code></pre>
+<pre class="r"><code>cv&lt;-cv.glmnet(x,newgrl$y)
+lasso1&lt;-glmnet(x,newgrl$y,lambda=cv$lambda.1se)
+coef(lasso1)</code></pre>
+<pre><code>## 286 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                                                       s0
+## (Intercept)                                   0.01447492
+## name.alias&quot;giulietta nefaria&quot;                 .         
+## name.aliasadam                                .         
+## name.aliasadam brashear                       .         
+## name.aliasalani ryan                          .         
+## name.aliasalex summers                        .         
+## name.aliasalexis                              .         
+## name.aliasalias: jonas                        .         
+## name.aliasamadeus cho                         .         
+## name.aliasamerica chavez                      .         
+## name.aliasangelica jones                      .         
+## name.aliasanna marie                          .         
+## name.aliasanthony edward &quot;tony&quot; stark         .         
+## name.aliasanthony edward stark                .         
+## name.aliasanthony ludgate druid               .         
+## name.aliasanya corazon                        .         
+## name.aliasares                                .         
+## name.aliasashley crawford                     .         
+## name.aliasava ayala                           .         
+## name.aliasbarbara barton (nee morse)          .         
+## name.aliasbenjamin jacob grimm                .         
+## name.aliasbonita juarez                       .         
+## name.aliasbrandon sharpe                      .         
+## name.aliasbrandt                              .         
+## name.aliasbrian braddock                      .         
+## name.aliasbrunnhilde                          .         
+## name.aliascarl lucas                          .         
+## name.aliascarol susan jane danvers            .         
+## name.aliascassie lang                         .         
+## name.aliascharlie-27                          .         
+## name.aliaschristopher powell                  .         
+## name.aliascirce                               .         
+## name.aliasclinton francis barton              .         
+## name.aliascraig hollis                        .         
+## name.aliascrystal amaquelin maximoff          .         
+## name.aliasdaisy johnson                       .         
+## name.aliasdane whitman                        .         
+## name.aliasdaniel thomas rand k&#39;ai             .         
+## name.aliasdavid alleyne                       .         
+## name.aliasdelroy garrett jr.                  .         
+## name.aliasdemarr davis                        .         
+## name.aliasdennis dunphy                       .         
+## name.aliasdennis sykes                        .         
+## name.aliasdoctor stephen vincent strange      .         
+## name.aliasdorreen green                       .         
+## name.aliasdorrek viii/theodore &quot;teddy&quot; altman .         
+## name.aliasdoug taggert                        .         
+## name.aliaseden fesi                           .         
+## name.aliaselijah bradley                      .         
+## name.aliaselvin haliday                       .         
+## name.aliasemery schaub                        .         
+## name.aliaseric brooks                         .         
+## name.aliaseric kevin masterson                .         
+## name.aliaseric o&#39;grady                        .         
+## name.aliaseros                                .         
+## name.aliasfiona                               .         
+## name.aliasflash thompson                      .         
+## name.aliasgene lorrene                        .         
+## name.aliasgreer grant nelson                  .         
+## name.aliasgreg willis                         .         
+## name.aliasheather douglas                     .         
+## name.aliashenry jonathan &quot;hank&quot; pym           .         
+## name.aliashenry p. mccoy                      .         
+## name.aliasheracles                            .         
+## name.aliashumberto lopez                      .         
+## name.aliasizzy kane                           .         
+## name.aliasjacques duquesne                    .         
+## name.aliasjames &quot;logan&quot; howlett               .         
+## name.aliasjames buchanan barnes               .         
+## name.aliasjames r. rhodes                     .         
+## name.aliasjames santini                       .         
+## name.aliasjanet van dyne                      .         
+## name.aliasjeanne foucault                     .         
+## name.aliasjennifer takeda                     .         
+## name.aliasjennifer walters                    .         
+## name.aliasjessica jones                       .         
+## name.aliasjessica miriam drew                 .         
+## name.aliasjim hammond (alias)                 .         
+## name.aliasjocasta                             .         
+## name.aliasjohn aman                           .         
+## name.aliasjohn f. walker                      .         
+## name.aliasjohnny gallo                        .         
+## name.aliasjonathan hart                       .         
+## name.aliasjulia carpenter                     .         
+## name.aliasjulie power                         .         
+## name.aliaskaluu                               .         
+## name.aliaskatherine &quot;kate&quot; bishop             .         
+## name.aliaskelsey leigh shorr                  .         
+## name.aliasken mack                            .         
+## name.aliaskevin kale connor                   .         
+## name.aliaskevin masterson                     .         
+## name.aliasloki laufeyson                      .         
+## name.aliaslyra                                .         
+## name.aliasmar-vell                            .         
+## name.aliasmarc spector                        .         
+## name.aliasmarcus milton                       .         
+## name.aliasmaria de guadalupe santiago         .         
+## name.aliasmaria hill                          .         
+## name.aliasmarrina smallwood                   .         
+## name.aliasmartinex t&#39;naga                     .         
+## name.aliasmatt murdock                        .         
+## name.aliasmatthew liebowitz (birth name)      .         
+## name.aliasmaya lopez                          .         
+## name.aliasmichiko musashi                     .         
+## name.aliasmiguel santos                       .         
+## name.aliasmoira brandon                       .         
+## name.aliasmonica chang                        .         
+## name.aliasmonica rambeau                      .         
+## name.aliasnamor mckenzie                      .         
+## name.aliasnatalia alianovna romanova          .         
+## name.aliasnathaniel richards                  .         
+## name.aliasnicholas fury, jr., marcus johnson  .         
+## name.aliasnicholette gold                     .         
+## name.aliasnoh-varr                            .         
+## name.aliasororo munroe                        .         
+## name.aliasotto octavius                       .         
+## name.aliaspatsy walker                        .         
+## name.aliaspeter benjamin parker               .         
+## name.aliasphillip coulson                     .         
+## name.aliasphillip javert                      .         
+## name.aliaspietro maximoff                     .         
+## name.aliasravonna lexus renslayer             .         
+## name.aliasreed richards                       .         
+## name.aliasrichard milhouse jones              .         
+## name.aliasrichard rider                       .         
+## name.aliasrita demara                         .         
+## name.aliasrobbie baldwin                      .         
+## name.aliasrobert bruce banner                 .         
+## name.aliasrobert l. frank sr.                 .         
+## name.aliasrobert reynolds                     .         
+## name.aliasroberto da costa                    .         
+## name.aliassam alexander                       .         
+## name.aliassamuel guthrie                      .         
+## name.aliassamuel thomas wilson                .         
+## name.aliasscott edward harris lang            .         
+## name.aliasshang-chi                           .         
+## name.aliassharon carter                       .         
+## name.aliasshiro yoshida                       .         
+## name.aliassimon williams                      .         
+## name.aliasstakar                              .         
+## name.aliassteven rogers                       .         
+## name.aliassusan richards (nee storm)          .         
+## name.aliast&#39;challa                            .         
+## name.aliastaki matsuya                        .         
+## name.aliasthaddeus ross                       .         
+## name.aliasthomas &quot;tommy&quot; shepherd             .         
+## name.aliasthor odinson                        .         
+## name.aliastony masters                        .         
+## name.aliasval ventura                         .         
+## name.aliasvance astrovik                      .         
+## name.aliasveranke                             .         
+## name.aliasvictor alvarez                      .         
+## name.aliasvictor mancha                       .         
+## name.aliasvictor shade (alias)                .         
+## name.aliaswade wilson                         .         
+## name.aliaswalter newell                       .         
+## name.aliaswanda maximoff                      .         
+## name.aliaswendell elvis vaughn                .         
+## name.aliaswilliam &quot;billy&quot; kaplan              .         
+## name.aliaswilliam baker                       .         
+## name.aliasx-51                                .         
+## name.aliasyondu udonta                        .         
+## name.aliasyvette                              .         
+## appearances                                   .         
+## gendermale                                    .         
+## probationary.introlapr-77                     .         
+## probationary.introlaug-91                     .         
+## probationary.introlfeb-91                     .         
+## probationary.introljan-83                     .         
+## probationary.introljan-87                     .         
+## probationary.introljul-75                     .         
+## probationary.introljul-80                     .         
+## probationary.introljun-83                     .         
+## probationary.introljun-84                     .         
+## probationary.introlmay-84                     .         
+## probationary.introlnov-75                     .         
+## probationary.introlsep-87                     .         
+## full.reserve.avengers.intro1-aug              .         
+## full.reserve.avengers.intro10-aug             .         
+## full.reserve.avengers.intro10-dec             .         
+## full.reserve.avengers.intro10-jun             .         
+## full.reserve.avengers.intro10-may             .         
+## full.reserve.avengers.intro10-sep             .         
+## full.reserve.avengers.intro11-apr             .         
+## full.reserve.avengers.intro11-jun             .         
+## full.reserve.avengers.intro11-nov             .         
+## full.reserve.avengers.intro12-apr             .         
+## full.reserve.avengers.intro12-dec             .         
+## full.reserve.avengers.intro12-jan             .         
+## full.reserve.avengers.intro13-apr             .         
+## full.reserve.avengers.intro13-feb             .         
+## full.reserve.avengers.intro13-jan             .         
+## full.reserve.avengers.intro13-jul             .         
+## full.reserve.avengers.intro13-may             .         
+## full.reserve.avengers.intro13-nov             .         
+## full.reserve.avengers.intro13-oct             .         
+## full.reserve.avengers.intro13-sep             .         
+## full.reserve.avengers.intro14-jan             .         
+## full.reserve.avengers.intro15-feb             .         
+## full.reserve.avengers.intro15-jan             .         
+## full.reserve.avengers.intro3-feb              .         
+## full.reserve.avengers.intro4-jun              .         
+## full.reserve.avengers.intro5-apr              .         
+## full.reserve.avengers.intro5-jul              .         
+## full.reserve.avengers.intro5-jun              .         
+## full.reserve.avengers.intro5-mar              .         
+## full.reserve.avengers.intro5-may              .         
+## full.reserve.avengers.intro5-nov              .         
+## full.reserve.avengers.intro5-oct              .         
+## full.reserve.avengers.intro6-feb              .         
+## full.reserve.avengers.intro6-jun              .         
+## full.reserve.avengers.intro7-feb              .         
+## full.reserve.avengers.intro7-mar              .         
+## full.reserve.avengers.intro7-sep              .         
+## full.reserve.avengers.intro8-dec              .         
+## full.reserve.avengers.intro9-aug              .         
+## full.reserve.avengers.intro9-dec              .         
+## full.reserve.avengers.introapr-00             .         
+## full.reserve.avengers.introapr-79             .         
+## full.reserve.avengers.introapr-87             .         
+## full.reserve.avengers.introapr-90             .         
+## full.reserve.avengers.introapr-91             .         
+## full.reserve.avengers.introapr-96             .         
+## full.reserve.avengers.introaug-73             .         
+## full.reserve.avengers.introaug-75             .         
+## full.reserve.avengers.introdec-69             .         
+## full.reserve.avengers.introdec-85             .         
+## full.reserve.avengers.introdec-87             .         
+## full.reserve.avengers.introdec-92             .         
+## full.reserve.avengers.introfeb-78             .         
+## full.reserve.avengers.introfeb-89             .         
+## full.reserve.avengers.introfeb-90             .         
+## full.reserve.avengers.introfeb-96             .         
+## full.reserve.avengers.introjan-88             .         
+## full.reserve.avengers.introjan-92             .         
+## full.reserve.avengers.introjul-00             .         
+## full.reserve.avengers.introjul-78             .         
+## full.reserve.avengers.introjul-82             .         
+## full.reserve.avengers.introjul-89             .         
+## full.reserve.avengers.introjul-90             .         
+## full.reserve.avengers.introjul-93             .         
+## full.reserve.avengers.introjun-79             .         
+## full.reserve.avengers.introjun-86             .         
+## full.reserve.avengers.introjun-88             .         
+## full.reserve.avengers.introjun-92             .         
+## full.reserve.avengers.introjun-93             .         
+## full.reserve.avengers.intromar-64             .         
+## full.reserve.avengers.intromar-79             .         
+## full.reserve.avengers.intromay-65             .         
+## full.reserve.avengers.intromay-68             .         
+## full.reserve.avengers.intromay-73             .         
+## full.reserve.avengers.intromay-83             .         
+## full.reserve.avengers.intromay-84             .         
+## full.reserve.avengers.intromay-88             .         
+## full.reserve.avengers.intromay-89             .         
+## full.reserve.avengers.intromay-93             .         
+## full.reserve.avengers.intromay-98             .         
+## full.reserve.avengers.intronov-68             .         
+## full.reserve.avengers.intronov-88             .         
+## full.reserve.avengers.intronov-89             .         
+## full.reserve.avengers.intronov-93             .         
+## full.reserve.avengers.introoct-67             .         
+## full.reserve.avengers.introoct-89             .         
+## full.reserve.avengers.introsep-63             .         
+## full.reserve.avengers.introsep-65             .         
+## full.reserve.avengers.introsep-76             .         
+## full.reserve.avengers.introsep-81             .         
+## full.reserve.avengers.introsep-84             .         
+## full.reserve.avengers.introsep-87             .         
+## full.reserve.avengers.introsep-92             .         
+## year                                          .         
+## years.since.joining                           .         
+## honoraryfull                                  .         
+## honoraryhonorary                              .         
+## honoraryprobationary                          .         
+## death1yes                                     .         
+## return1no                                     .         
+## return1yes                                    .         
+## death2no                                      .         
+## death2yes                                     .         
+## return2no                                     .         
+## return2yes                                    .         
+## death3yes                                     .         
+## return3no                                     .         
+## return3yes                                    .         
+## y                                             0.96946144</code></pre>
+<pre class="r"><code>#cv with lasso
+set.seed(1234)
+k=5 #choose number of folds
+data1&lt;-mtcars[sample(nrow(mtcars)),] #randomly order rows
+folds&lt;-cut(seq(1:nrow(mtcars)),breaks=k,labels=F) #create folds
+diags&lt;-NULL
+for(i in 1:k){
+train&lt;-data1[folds!=i,]
+test&lt;-data1[folds==i,]
+fit&lt;-lm(mpg~cyl+hp+wt,data=train)
+yhat&lt;-predict(fit,newdata=test)
+diags[i]&lt;-mean((test$mpg-yhat)^2)
+}
+mean(diags)</code></pre>
+<pre><code>## [1] 7.882414</code></pre>
+<pre class="r"><code># The amount of error is much better/ less with using only the varibales the lasso predicted! This is logical since the whole point of the lasso model is to look at the variable that really matter and decrease the amount of error.</code></pre>
+</div>
+<div id="modeling" class="section level2">
+<h2>Modeling</h2>
+<pre class="r"><code>summary(cars)</code></pre>
+<pre><code>##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00</code></pre>
+<p>You can also embed plots, for example:</p>
+<p><img src="/project/project2_files/figure-html/pressure-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
